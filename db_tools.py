@@ -35,9 +35,9 @@ class autowork_db():
 
     def show_employees(self):
 
-        querry = 'select id_emp, fio, rental_date, rate, name_spec \
+        querry = 'select id_worker, fio, rental_date, rate, name_spec \
                   from employees, emp_pos, specialization \
-                  where id_emp = id_empl and id_sp = id_spec'
+                  where id_worker = id_empl and id_pos = id_spec'
 
         self.cursor.execute(querry)
         return self.cursor.fetchall()
@@ -60,7 +60,7 @@ class autowork_db():
                           rate = %s
                     """
         emp_pos = """
-                    insert into autowork.emp_pos(id_emp, id_sp)
+                    insert into autowork.emp_pos(id_worker, id_pos)
                     values (%s, %s)
                   """
         #добавление нового человека
