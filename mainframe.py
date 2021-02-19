@@ -22,20 +22,31 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.retranslateUi(self.win)
 
         self.ui.make_con.triggered.connect(self.raise_con_dialog)
-        self.ui.discon.triggered.connect(self.close_db)
-
-        self.ui.employees.triggered.connect(self.employees)
-        self.ui.customer.triggered.connect(self.clients)
-        self.ui.spec.triggered.connect(self.special)
-
-        self.ui.add_emp.triggered.connect(self.raise_add_emp)
-        self.ui.add_client.triggered.connect(self.raise_add_cust)
-
-        self.transl = {'car':'Авто', 'customer':'Клиенты',
-                        'employees':'Сотрудники', 'services':'Услуги',
-                        'spec':'Специализации'}
+        self.ui.discon.triggered.connect(self.raise_discon_dialog)
 
         self.win.show()
+
+    def raise_discon_dialog(self):
+        """
+        Отключение от БД
+        Выводит сообщение
+        """
+
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText("Выход выполнен успешно")
+        msg.setWindowTitle("Выход")
+
+        try:
+            self.close_db()
+            msg.exec_()
+        except:
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Выход выполнен не успешно")
+            msg.setInformativeText("Возможно вы были неподключены к БД")
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
+
 
     def raise_con_dialog(self):
         """
@@ -45,8 +56,17 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         try:
             my_dial = ConDial()
             self.connection, self.cursor = my_dial.mainDial()
+            my_dial.access_msg()
+
+            self.ui.employees.triggered.connect(self.employees)
+            self.ui.customer.triggered.connect(self.clients)
+            self.ui.spec.triggered.connect(self.special)
+
+            self.ui.add_emp.triggered.connect(self.raise_add_emp)
+            self.ui.add_client.triggered.connect(self.raise_add_cust)
+
         except:
-            pass
+            my_dial.error_msg()
 
     def raise_add_emp(self):
         """

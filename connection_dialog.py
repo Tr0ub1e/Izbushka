@@ -20,6 +20,23 @@ class ConDial(QtWidgets.QDialog):
 
         self.dial.exec_()
 
+    def access_msg(self):
+
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText("Вход выполнен успешно!")
+        msg.setWindowTitle("Вход")
+        msg.exec_()
+
+    def error_msg(self):
+
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText("Ошибка входа")
+        msg.setInformativeText('Неправильный логин/пароль')
+        msg.setWindowTitle("Ошибка")
+        msg.exec_()
+
     def mainDial(self):
 
         user = self.dial_ui.login.text()
@@ -27,5 +44,6 @@ class ConDial(QtWidgets.QDialog):
 
         try:
             return self.db.make_con(user, pwd)
+
         finally:
             self.dial.close()
