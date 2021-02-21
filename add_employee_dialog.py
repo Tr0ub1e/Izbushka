@@ -31,15 +31,35 @@ class EmpDial(QtWidgets.QDialog):
     def insert_data(self):
 
         try:
-            fio = self.dial_ui.lineEdit.text()
+            fam = self.dial_ui.famEdit.text()
+            name = self.dial_ui.nameEdit.text()
+            fath = self.dial_ui.fathEdit.text()
+
             rental_date = self.dial_ui.dateEdit.date()
-            rate = self.dial_ui.lineEdit_2.text()
+            rate = self.dial_ui.moneyEdit.text()
             spec = self.dial_ui.comboBox.currentText()
 
-            self.db.insert_employees(fio, rental_date, rate, spec)
+            try:
+                rate = int(rate)
+            except:
+                raise
+
+            _ = fam + " " +name+ " " + fath
+
+            self.db.insert_employees(_, rental_date, rate, spec)
 
         except Exception as e:
-            print(self.__class__.__name__, e)
+            #print(e)
+            self.error_msg()
 
         finally:
             self.dial.close()
+
+    def error_msg(self):
+
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText("Ошибка добавления")
+        msg.setInformativeText('Проверьте правильность данных')
+        msg.setWindowTitle("Ошибка")
+        msg.exec_()

@@ -24,13 +24,31 @@ class CustDial(QtWidgets.QDialog):
     def insert_data(self):
 
         try:
-            fio = self.dial_ui.fioEdit.text()
+            fam = self.dial_ui.famEdit.text()
+            name = self.dial_ui.nameEdit.text()
+            fath = self.dial_ui.fathEdit.text()
             phone = self.dial_ui.phoneEdit.text()
 
-            self.db.insert_customers(fio, phone)
+            try:
+                phone = int(phone)
+            except:
+                raise
 
-        except Exception as e:
-            print(e)
+            _ = fam + " " +name+ " " + fath
+
+            self.db.insert_customers(_, phone)
+
+        except:
+            self.error_msg()
 
         finally:
             self.dial.close()
+
+    def error_msg(self):
+
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setText("Ошибка добавления")
+        msg.setInformativeText('Проверьте правильность данных')
+        msg.setWindowTitle("Ошибка")
+        msg.exec_()

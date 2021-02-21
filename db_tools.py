@@ -44,7 +44,8 @@ class autowork_db():
 
     def insert_employees(self, fio, rental_date, rate, spec):
 
-        querry = """insert into autowork.employees
+        querry = """
+                    insert into autowork.employees
                     (fio, rental_date, rate)
                     values(%s, %s, %s)
                  """
@@ -56,9 +57,9 @@ class autowork_db():
 
         id_empl_q = """
                     select id_empl from autowork.employees
-                    where fio = %s and rental_date = %s and
-                          rate = %s
+                    where fio = %s and rental_date = %s and rate = %s
                     """
+
         emp_pos = """
                     insert into autowork.emp_pos(id_worker, id_pos)
                     values (%s, %s)
@@ -91,7 +92,7 @@ class autowork_db():
         querry = """
                     insert into customer(fio, phone)
                     values(%s, %s)
-                """
+                 """
 
         self.cursor.execute(querry, (fio, phone))
         self.connection.commit()

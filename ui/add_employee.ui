@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>242</height>
+    <width>311</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>200</y>
+     <x>110</x>
+     <y>300</y>
      <width>93</width>
      <height>28</height>
     </rect>
@@ -36,24 +36,14 @@
     </rect>
    </property>
    <property name="text">
-    <string>Фио</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>381</width>
-     <height>22</height>
-    </rect>
+    <string>Фамилия</string>
    </property>
   </widget>
   <widget class="QDateEdit" name="dateEdit">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>90</y>
+     <x>190</x>
+     <y>220</y>
      <width>110</width>
      <height>22</height>
     </rect>
@@ -63,7 +53,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>90</y>
+     <y>220</y>
      <width>161</width>
      <height>16</height>
     </rect>
@@ -76,7 +66,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
+     <y>180</y>
      <width>55</width>
      <height>16</height>
     </rect>
@@ -85,21 +75,30 @@
     <string>Ставка</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="moneyEdit">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>130</y>
-     <width>113</width>
+     <x>70</x>
+     <y>180</y>
+     <width>231</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="inputMask">
+    <string/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="maxLength">
+    <number>32767</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>260</y>
      <width>101</width>
      <height>16</height>
     </rect>
@@ -112,8 +111,64 @@
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>160</y>
+     <y>260</y>
      <width>131</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="famEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>291</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>261</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Имя</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="nameEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>291</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>261</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Отчество</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="fathEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>291</width>
      <height>22</height>
     </rect>
    </property>

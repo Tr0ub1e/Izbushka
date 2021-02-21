@@ -47,7 +47,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
-
     def raise_con_dialog(self):
         """
         Выводит диалог подключения к БД
@@ -73,15 +72,14 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         Выводит диалог добавления нового работника в БД
         """
         my_dial = EmpDial(self.show_spec(), self.connection, self.cursor)
+        self.employees()
 
     def raise_add_cust(self):
         """
         Выводит диалог добавления нового клиента
         """
-        try:
-            my_dial = CustDial(self.connection, self.cursor)
-        except Exception as e:
-            print(e)
+        my_dial = CustDial(self.connection, self.cursor)
+        self.clients()
 
     def employees(self):
         """
@@ -129,7 +127,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.tableWidget.setHorizontalHeaderLabels(['id', 'Фио', 'Телефон', 'Кол-во обращений'])
         self.ui.tableWidget.resizeColumnsToContents()
 
-
     def special(self):
         """
         Вывод в таблицу специальностей
@@ -149,7 +146,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         self.ui.tableWidget.setHorizontalHeaderLabels(['id_spec', 'Специальность'])
         self.ui.tableWidget.resizeColumnsToContents()
-
 
     def clear_table(self):
         """
