@@ -58,6 +58,7 @@
      <addaction name="add_emp"/>
      <addaction name="add_client"/>
      <addaction name="add_spec"/>
+     <addaction name="add_auto"/>
     </widget>
     <addaction name="menu_4"/>
    </widget>
@@ -93,7 +94,7 @@
   </action>
   <action name="car">
    <property name="text">
-    <string>Авто</string>
+    <string>Автомобили</string>
    </property>
   </action>
   <action name="spec">
@@ -139,6 +140,11 @@
   <action name="employees">
    <property name="text">
     <string>Сотрудники</string>
+   </property>
+  </action>
+  <action name="add_auto">
+   <property name="text">
+    <string>Автомобиль</string>
    </property>
   </action>
  </widget>

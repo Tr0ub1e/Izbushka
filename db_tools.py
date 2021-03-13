@@ -26,6 +26,92 @@ class autowork_db():
     def close_db(self):
         self.connection.close()
 
+    def get_car(self, mark, model):
+
+        querry = """
+                select id_car from autowork.car
+                where company = %s and model = %s
+                """
+
+        self.cursor.execute(querry, (mark, model))
+
+        return self.cursor.fetchall()
+
+    def get_fam(self):
+        querry = """
+                select distinct substring_index(fio, ' ', 1)
+                FROM autowork.customer
+                 """
+
+        self.cursor.execute(querry)
+
+        return self.cursor.fetchall()
+
+    def get_name(self, fam):
+        querry = """
+
+        select distinct substring_index(substring_index(fio, ' ', 2), ' ', -1)
+        FROM autowork.customer
+        where substring_index(fio, ' ', 1) = %s
+
+        """
+
+        self.cursor.execute(querry, (fam,))
+
+        return self.cursor.fetchall()
+
+    def get_fath(self, fam, name):
+        querry = """
+        select distinct substring_index(fio, ' ', -1) FROM autowork.customer
+        where
+        substring_index(fio, ' ', 1) = %s and
+	    substring_index(substring_index(fio, ' ', 2), ' ', -1) = %s
+        """
+        self.cursor.execute(querry, (fam, name))
+
+        return self.cursor.fetchall()
+
+    def get_phone(self, fam, name, fath):
+
+        querry = """
+                select phone from autowork.customer
+                where fio = %s
+                """
+
+        fio = fam + ' ' + name + ' ' + fath
+
+        self.cursor.execute(querry, (fio,))
+        return self.cursor.fetchall()
+
+    def insert_auto(self, id_client, id_auto, car_number):
+
+        car_pos = """
+                    insert into autowork.client_pos
+                    (id_client, id_car, gov_number)
+                    values (%s, %s, %s)
+                  """
+
+        self.cursor.execute(car_pos, (id_client, id_auto, car_number))
+        self.connection.commit()
+
+    def get_companies(self):
+
+        querry = """
+                 select company from autowork.car group by 1;
+                 """
+        self.cursor.execute(querry)
+
+        return self.cursor.fetchall()
+
+    def get_models(self, company):
+
+        querry = """
+                 select model from autowork.car where company = %s
+                 """
+        self.cursor.execute(querry, (company,))
+
+        return self.cursor.fetchall()
+
     def show_spec(self):
 
         querry = 'select * from specialization'
@@ -35,9 +121,11 @@ class autowork_db():
 
     def show_employees(self):
 
-        querry = 'select id_worker, fio, rental_date, rate, name_spec \
-                  from employees, emp_pos, specialization \
-                  where id_worker = id_empl and id_pos = id_spec'
+        querry = """
+                select fio, rental_date, rate, name_spec
+                from employees join emp_pos on id_worker = id_empl
+                join specialization on id_pos = id_spec
+                """
 
         self.cursor.execute(querry)
         return self.cursor.fetchall()
@@ -78,7 +166,7 @@ class autowork_db():
 
         #связать со специальностями
         self.cursor.execute(emp_pos, (*id_empl, *id_spec))
-
+        self.connection.commit()
 
     def show_customers(self):
 
