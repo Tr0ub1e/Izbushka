@@ -41,18 +41,14 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         try:
             self.close_db()
 
-            self.ui.employees.disconnect()
-            self.ui.customer.disconnect()
-            self.ui.spec.disconnect()
-
             self.ui.add_emp.disconnect()
             self.ui.add_client.disconnect()
             self.ui.add_auto.disconnect()
 
-            self.clear_table()
             msg.exec_()
 
-        except:
+        except Exception as e:
+            print(e)
             msg.setIcon(QtWidgets.QMessageBox.Critical)
             msg.setText("Выход выполнен не успешно")
             msg.setInformativeText("Возможно вы были неподключены к БД")
@@ -69,15 +65,15 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.connection, self.cursor = my_dial.mainDial()
             my_dial.access_msg()
 
-            self.ui.employees.triggered.connect(self.employees)
-            self.ui.customer.triggered.connect(self.clients)
-            self.ui.spec.triggered.connect(self.special)
-
             self.ui.add_emp.triggered.connect(self.raise_add_emp)
             self.ui.add_client.triggered.connect(self.raise_add_cust)
             self.ui.add_auto.triggered.connect(self.raise_add_auto)
 
-        except:
+            self.employees()
+            self.clients()
+
+        except Exception as e:
+            print(e)
             my_dial.error_msg()
 
     def raise_add_auto(self):
@@ -90,6 +86,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         Выводит диалог добавления нового работника в БД
         """
         my_dial = EmpDial(self.show_spec(), self.connection, self.cursor)
+        self.ui.emplTree.clear()
         self.employees()
 
     def raise_add_cust(self):
@@ -97,73 +94,38 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         Выводит диалог добавления нового клиента
         """
         my_dial = CustDial(self.connection, self.cursor)
+        self.ui.clientTree.clear()
         self.clients()
-
-    def employees(self):
-        """
-        Вывод в таблицу работников по типу
-
-        фио\дата приема на работу\зарплата
-        """
-        self.clear_table()
-        self.ui.tableWidget.setColumnCount(4)
-
-        for i in self.show_employees():
-
-            fio, date, rate, spec = i
-            rows = self.ui.tableWidget.rowCount()
-
-            self.ui.tableWidget.insertRow(rows)
-            
-            self.ui.tableWidget.setItem(rows, 0, QtWidgets.QTableWidgetItem(fio))
-            self.ui.tableWidget.setItem(rows, 1, QtWidgets.QTableWidgetItem(str(date)))
-            self.ui.tableWidget.setItem(rows, 2, QtWidgets.QTableWidgetItem(str(rate)))
-            self.ui.tableWidget.setItem(rows, 3, QtWidgets.QTableWidgetItem(spec))
-
-        self.ui.tableWidget.setHorizontalHeaderLabels(['Фио', 'Дата приема', 'Ставка', 'Специализация'])
-        self.ui.tableWidget.resizeColumnsToContents()
 
     def clients(self):
         """
-        Вывод в таблицу клиентов по типу
-
-        перв кл\фио\телефон\кол-во заказов
+        Вывод отсорт. дерева клиентов по фамилиям
         """
-        self.clear_table()
-        self.ui.tableWidget.setColumnCount(3)
+        list_of_fam = [j for i in self.get_fam() for j in i]
 
-        for i in self.show_customers():
-            _, fio, phone, orders = i
-            rows = self.ui.tableWidget.rowCount()
 
-            self.ui.tableWidget.insertRow(rows)
-            #self.ui.tableWidget.setItem(rows, 0, QtWidgets.QTableWidgetItem(str(ind)))
-            self.ui.tableWidget.setItem(rows, 0, QtWidgets.QTableWidgetItem(fio))
-            self.ui.tableWidget.setItem(rows, 1, QtWidgets.QTableWidgetItem(phone))
-            self.ui.tableWidget.setItem(rows, 2, QtWidgets.QTableWidgetItem(str(orders)))
+        for fam in sorted(list_of_fam):
+            parent = QtWidgets.QTreeWidgetItem(self.ui.clientTree)
+            parent.setFlags(parent.flags())
+            parent.setText(0, fam)
 
-        self.ui.tableWidget.setHorizontalHeaderLabels(['Телефон', 'Фио', 'Кол-во обращений'])
-        self.ui.tableWidget.resizeColumnsToContents()
+            for fio in self.get_fio(fam):
+                child = QtWidgets.QTreeWidgetItem(parent)
+                child.setText(0, *fio)
 
-    def special(self):
+    def employees(self):
         """
-        Вывод в таблицу специальностей
-        перв кл\имя
+        Вывод дерева специальностей и работников
         """
-        self.clear_table()
-        self.ui.tableWidget.setColumnCount(1)
 
-        for i in self.show_spec():
+        for name in self.show_spec():
+            parent = QtWidgets.QTreeWidgetItem(self.ui.emplTree)
+            parent.setFlags(parent.flags())
+            parent.setText(0, name[1])
 
-            _, name = i
-            rows = self.ui.tableWidget.rowCount()
-
-            self.ui.tableWidget.insertRow(rows)
-            #self.ui.tableWidget.setItem(rows, 0, QtWidgets.QTableWidgetItem(str(id_sp)))
-            self.ui.tableWidget.setItem(rows, 0, QtWidgets.QTableWidgetItem(name))
-
-        self.ui.tableWidget.setHorizontalHeaderLabels(['Специальность'])
-        self.ui.tableWidget.resizeColumnsToContents()
+            for fio in self.emp_pos(name[1]):
+                child = QtWidgets.QTreeWidgetItem(parent)
+                child.setText(0, *fio)
 
     def clear_table(self):
         """

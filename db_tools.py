@@ -37,6 +37,17 @@ class autowork_db():
 
         return self.cursor.fetchall()
 
+    def get_fio(self, fam):
+
+        querry = """
+                select fio FROM autowork.customer
+                where substring_index(fio, ' ', 1) = %s;
+                """
+                
+        self.cursor.execute(querry, (fam,))
+
+        return self.cursor.fetchall()
+
     def get_fam(self):
         querry = """
                 select distinct substring_index(fio, ' ', 1)
@@ -116,6 +127,20 @@ class autowork_db():
 
         querry = 'select * from specialization'
         self.cursor.execute(querry)
+
+        return self.cursor.fetchall()
+
+    def emp_pos(self, name_spec):
+
+        query = """
+                select fio FROM autowork.employees join emp_pos
+                on id_empl = id_worker
+                join specialization
+                on id_pos = id_spec
+                where name_spec = %s
+                """
+
+        self.cursor.execute(query, (name_spec,))
 
         return self.cursor.fetchall()
 

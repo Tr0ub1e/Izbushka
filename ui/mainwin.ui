@@ -14,21 +14,112 @@
    <string>Izbushka</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>150</y>
-      <width>530</width>
-      <height>440</height>
+      <x>0</x>
+      <y>99</y>
+      <width>901</width>
+      <height>591</height>
      </rect>
     </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
     </property>
-    <property name="alternatingRowColors">
-     <bool>false</bool>
+    <property name="tabPosition">
+     <enum>QTabWidget::South</enum>
     </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::ElideNone</enum>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Работники</string>
+     </attribute>
+     <widget class="QTreeWidget" name="emplTable">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>10</y>
+        <width>580</width>
+        <height>450</height>
+       </rect>
+      </property>
+      <column>
+       <property name="text">
+        <string notr="true">Расписание</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QTreeWidget" name="emplTree">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>11</y>
+        <width>271</width>
+        <height>451</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <column>
+       <property name="text">
+        <string notr="true">Специализации</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Клиенты</string>
+     </attribute>
+     <widget class="QTreeWidget" name="clientTable">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>10</y>
+        <width>580</width>
+        <height>450</height>
+       </rect>
+      </property>
+      <column>
+       <property name="text">
+        <string notr="true">Подробности</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QTreeWidget" name="clientTree">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>271</width>
+        <height>451</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <column>
+       <property name="text">
+        <string notr="true">Клиенты</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -42,7 +133,7 @@
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>База</string>
+     <string>База данных</string>
     </property>
     <addaction name="make_con"/>
     <addaction name="discon"/>
@@ -69,7 +160,6 @@
     <addaction name="customer"/>
     <addaction name="car"/>
     <addaction name="spec"/>
-    <addaction name="services"/>
     <addaction name="employees"/>
    </widget>
    <addaction name="menu"/>
