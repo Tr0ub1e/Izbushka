@@ -43,7 +43,7 @@ class autowork_db():
                 select fio FROM autowork.customer
                 where substring_index(fio, ' ', 1) = %s;
                 """
-                
+
         self.cursor.execute(querry, (fam,))
 
         return self.cursor.fetchall()
@@ -133,7 +133,7 @@ class autowork_db():
     def emp_pos(self, name_spec):
 
         query = """
-                select fio FROM autowork.employees join emp_pos
+                select fio, id_empl FROM autowork.employees join emp_pos
                 on id_empl = id_worker
                 join specialization
                 on id_pos = id_spec
@@ -147,7 +147,7 @@ class autowork_db():
     def show_employees(self):
 
         querry = """
-                select fio, rental_date, rate, name_spec
+                select fio, rental_date, rate, name_spec, phone
                 from employees join emp_pos on id_worker = id_empl
                 join specialization on id_pos = id_spec
                 """
@@ -155,12 +155,22 @@ class autowork_db():
         self.cursor.execute(querry)
         return self.cursor.fetchall()
 
-    def insert_employees(self, fio, rental_date, rate, spec):
+    def get_empl(self, id_empl):
+
+        querry = """
+                select * from autowork.employees
+                where id_empl = %s
+                """
+                
+        self.cursor.execute(querry, (id_empl,))
+        return self.cursor.fetchall()
+
+    def insert_employees(self, fio, rental_date, rate, spec, phone):
 
         querry = """
                     insert into autowork.employees
-                    (fio, rental_date, rate)
-                    values(%s, %s, %s)
+                    (fio, rental_date, rate, phone)
+                    values(%s, %s, %s, %s)
                  """
 
         id_spec_q = """
@@ -171,6 +181,7 @@ class autowork_db():
         id_empl_q = """
                     select id_empl from autowork.employees
                     where fio = %s and rental_date = %s and rate = %s
+                    and phone = %s
                     """
 
         emp_pos = """
@@ -178,12 +189,24 @@ class autowork_db():
                     values (%s, %s)
                   """
         #добавление нового человека
-        self.cursor.execute(querry, (fio, rental_date.toString(Qt.ISODate), rate))
-        self.connection.commit()
+        try:
+            self.cursor.execute(querry, \
+                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
+            self.connection.commit()
+
+        except Exception as e:
+            print(querry)
+            print(e)
 
         #получение его ключа
-        self.cursor.execute(id_empl_q, (fio, rental_date.toString(Qt.ISODate), rate))
-        id_empl = self.cursor.fetchone()
+        try:
+            self.cursor.execute(id_empl_q, \
+                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
+            id_empl = self.cursor.fetchone()
+
+        except Exception as e:
+            print(id_empl_q)
+            print(e)
 
         #получить ключ специальности
         self.cursor.execute(id_spec_q, (spec,))

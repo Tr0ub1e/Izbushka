@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtGui
+from datetime import date
 from myform import Ui_MainWindow
 from db_tools import autowork_db
 from connection_dialog import ConDial
@@ -71,6 +72,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
             self.employees()
             self.clients()
+            #self.debug_tree()
 
         except Exception as e:
             print(e)
@@ -117,15 +119,16 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         Вывод дерева специальностей и работников
         """
-
         for name in self.show_spec():
             parent = QtWidgets.QTreeWidgetItem(self.ui.emplTree)
             parent.setFlags(parent.flags())
             parent.setText(0, name[1])
 
-            for fio in self.emp_pos(name[1]):
+            for fio, id_empl in self.emp_pos(name[1]):
                 child = QtWidgets.QTreeWidgetItem(parent)
-                child.setText(0, *fio)
+                child.setText(0, "{}: {}".format(fio, id_empl))
+
+        self.ui.emplTree.itemSelectionChanged.connect(self.empl_tree_items)
 
     def clear_table(self):
         """
@@ -134,3 +137,21 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.tableWidget.clear()
         self.ui.tableWidget.setRowCount(0)
         self.ui.tableWidget.setColumnCount(0)
+
+    def empl_tree_items(self):
+
+        if not self.ui.emplTree.currentItem().text(0) in \
+                                        [x for _, x in self.show_spec()]:
+
+            fio, id_empl = self.ui.emplTree.currentItem().text(0).split(':')
+
+            self.ui.fioLab.setText(fio)
+
+            self.ui.specLab.setText(self.ui.emplTree. \
+                            currentItem().parent().text(0))
+
+            _, _, rental_date, rate, phone = tuple(self.get_empl(id_empl)[0])
+
+            self.ui.dateLab.setText(str(rental_date))
+            self.ui.rateLab.setText(str(rate))
+            self.ui.phoneLab.setText(phone)

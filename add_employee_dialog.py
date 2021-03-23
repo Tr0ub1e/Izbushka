@@ -38,18 +38,20 @@ class EmpDial(QtWidgets.QDialog):
             rental_date = self.dial_ui.dateEdit.date()
             rate = self.dial_ui.moneyEdit.text()
             spec = self.dial_ui.comboBox.currentText()
+            phone = self.dial_ui.phoneEdit.text()
 
             try:
                 rate = int(rate)
-            except:
-                raise
+                if len(phone) > 12: raise
+            except Exception as e:
+                print(e)
 
             _ = fam + " " +name+ " " + fath
 
-            self.db.insert_employees(_, rental_date, rate, spec)
+            self.db.insert_employees(_, rental_date, rate, spec, phone)
 
         except Exception as e:
-            #print(e)
+            print(e)
             self.error_msg()
 
         finally:
