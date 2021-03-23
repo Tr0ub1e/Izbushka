@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtGui
-from datetime import date
 from myform import Ui_MainWindow
 from db_tools import autowork_db
 from connection_dialog import ConDial
