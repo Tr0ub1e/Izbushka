@@ -1,3 +1,4 @@
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
 from myform import Ui_MainWindow
 from db_tools import autowork_db
@@ -41,9 +42,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         try:
             self.close_db()
 
-            self.ui.add_emp.disconnect()
-            self.ui.add_client.disconnect()
-            self.ui.add_auto.disconnect()
+            self.ui.addEmpl.disconnect()
+            self.ui.addCust.disconnect()
+            self.ui.addCar.disconnect()
 
             msg.exec_()
 
@@ -65,9 +66,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.connection, self.cursor = my_dial.mainDial()
             my_dial.access_msg()
 
-            self.ui.add_emp.triggered.connect(self.raise_add_emp)
-            self.ui.add_client.triggered.connect(self.raise_add_cust)
-            self.ui.add_auto.triggered.connect(self.raise_add_auto)
+            self.ui.addEmpl.clicked.connect(self.raise_add_emp)
+            self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
+            self.ui.addCust.clicked.connect(self.raise_add_cust)
+            self.ui.addCar.clicked.connect(self.raise_add_auto)
 
             self.employees()
             self.clients()
@@ -86,7 +88,24 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         Выводит диалог добавления нового работника в БД
         """
-        my_dial = EmpDial(self.show_spec(), self.connection, self.cursor)
+        my_dial = EmpDial(self.show_spec(), self.connection, \
+                                                    self.cursor, 'insert')
+        self.ui.emplTree.clear()
+        self.employees()
+
+    def raise_change_empl(self):
+
+        fio = self.ui.fioLab.text().split(' ')
+        spec = self.ui.specLab.text()
+        date_ = datetime.strptime(self.ui.dateLab.text(), '%Y-%m-%d').date()
+        phone = self.ui.phoneLab.text()
+        rate = self.ui.rateLab.text()
+
+        _ = (*fio, date_, rate, phone, spec)
+
+        my_dial = EmpDial(self.show_spec(), self.connection, self.cursor,
+                "update", _)
+
         self.ui.emplTree.clear()
         self.employees()
 

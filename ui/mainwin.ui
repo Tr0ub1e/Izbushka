@@ -189,7 +189,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="setFilter_2">
+     <widget class="QPushButton" name="setFilterCust">
       <property name="geometry">
        <rect>
         <x>300</x>
@@ -202,7 +202,7 @@
        <string>Настроить фильтр</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="setFilter_3">
+     <widget class="QPushButton" name="addCust">
       <property name="geometry">
        <rect>
         <x>750</x>
@@ -215,7 +215,7 @@
        <string>Добавить клиента</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="setFilter_4">
+     <widget class="QPushButton" name="delCust">
       <property name="geometry">
        <rect>
         <x>750</x>
@@ -228,7 +228,7 @@
        <string>Удалить клиента</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="setFilter_5">
+     <widget class="QPushButton" name="changeCust">
       <property name="geometry">
        <rect>
         <x>510</x>
@@ -239,6 +239,19 @@
       </property>
       <property name="text">
        <string>Изменить</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addCar">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>520</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить машину</string>
       </property>
      </widget>
     </widget>
@@ -439,7 +452,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="setFilter">
+     <widget class="QPushButton" name="setFilterEmpl">
       <property name="geometry">
        <rect>
         <x>290</x>
@@ -478,7 +491,7 @@
        <string>Добавить работника</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="setFilter_6">
+     <widget class="QPushButton" name="changeEmpl">
       <property name="geometry">
        <rect>
         <x>520</x>
@@ -500,6 +513,11 @@
         <height>451</height>
        </rect>
       </property>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
      </widget>
     </widget>
    </widget>
@@ -520,23 +538,7 @@
     <addaction name="make_con"/>
     <addaction name="discon"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>Правка</string>
-    </property>
-    <widget class="QMenu" name="menu_4">
-     <property name="title">
-      <string>Добавить....</string>
-     </property>
-     <addaction name="add_emp"/>
-     <addaction name="add_client"/>
-     <addaction name="add_spec"/>
-     <addaction name="add_auto"/>
-    </widget>
-    <addaction name="menu_4"/>
-   </widget>
    <addaction name="menu"/>
-   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="make_con">

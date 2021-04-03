@@ -130,6 +130,13 @@ class autowork_db():
 
         return self.cursor.fetchall()
 
+    def get_id_spec(self, spec):
+
+        querry = "select id_spec from specialization where name_spec = %s"
+
+        self.cursor.execute(querry, (spec,))
+        return self.cursor.fetchone()
+
     def emp_pos(self, name_spec):
 
         query = """
@@ -161,9 +168,47 @@ class autowork_db():
                 select * from autowork.employees
                 where id_empl = %s
                 """
-                
+
         self.cursor.execute(querry, (id_empl,))
         return self.cursor.fetchall()
+
+    def get_id_empl(self, *args):
+
+        querry = """
+                select id_empl from employees join emp_pos on id_worker = id_empl
+                join specialization on id_pos = id_spec
+                where
+                fio = %s and rental_date = %s and rate = %s and name_spec = %s
+                and phone = %s
+                """
+
+        self.cursor.execute(querry, args)
+        return self.cursor.fetchone()
+
+    def update_empl(self, id_empl=None, id_pos=None, d={}):
+
+        querry = ("update autowork.employees set ", " where id_empl = %s")
+        pos = ("update autowork.emp_pos set id_pos = %s where id_worker = %s")
+
+        #change spec
+        if id_empl != None and id_pos != None:
+
+            if not isinstance(id_empl, int) or not isinstance(id_pos, int):
+                raise TypeError
+
+            self.cursor.execute(pos, (id_pos, id_empl))
+            self.connection.commit()
+
+        if d != {}:
+
+            for i in d.items():
+
+            #change credintals
+                _ = querry[0] + "{} = '{}'".format(*i)+querry[1]
+                print(_)
+                self.cursor.execute(_, (id_empl,))
+                self.connection.commit()
+
 
     def insert_employees(self, fio, rental_date, rate, spec, phone):
 
