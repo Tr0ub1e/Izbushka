@@ -26,6 +26,23 @@ class autowork_db():
     def close_db(self):
         self.connection.close()
 
+    def get_client_cars(self, id_cust):
+
+        query = """
+            select
+                    company, model, gov_number
+            from
+                autowork.client_pos
+                join car using(id_car)
+                join customer using(id_cust)
+            where
+                id_cust = %s
+                """
+
+        self.cursor.execute(query, (id_cust,))
+        
+        return self.cursor.fetchall()
+
     def get_car(self, mark, model):
 
         querry = """
@@ -35,12 +52,12 @@ class autowork_db():
 
         self.cursor.execute(querry, (mark, model))
 
-        return self.cursor.fetchall()
+        return self.cursor.fetchone()
 
     def get_fio(self, fam):
 
         querry = """
-                select fio FROM autowork.customer
+                select id_cust, fio FROM autowork.customer
                 where substring_index(fio, ' ', 1) = %s;
                 """
 
@@ -82,27 +99,24 @@ class autowork_db():
 
         return self.cursor.fetchall()
 
-    def get_phone(self, fam, name, fath):
+    def get_phone(self, id_cust):
 
         querry = """
                 select phone from autowork.customer
-                where fio = %s
+                where id_cust = %s
                 """
-
-        fio = fam + ' ' + name + ' ' + fath
-
-        self.cursor.execute(querry, (fio,))
+        self.cursor.execute(querry, (id_cust,))
         return self.cursor.fetchall()
 
-    def insert_auto(self, id_client, id_auto, car_number):
+    def insert_auto(self, id_cust, id_auto, car_number):
 
         car_pos = """
                     insert into autowork.client_pos
-                    (id_client, id_car, gov_number)
+                    (id_cust, id_car, gov_number)
                     values (%s, %s, %s)
                   """
 
-        self.cursor.execute(car_pos, (id_client, id_auto, car_number))
+        self.cursor.execute(car_pos, (id_cust, id_auto, car_number))
         self.connection.commit()
 
     def get_companies(self):
@@ -209,6 +223,14 @@ class autowork_db():
                 self.cursor.execute(_, (id_empl,))
                 self.connection.commit()
 
+    def delete_empl_by_id(self, id_empl):
+
+        employees = "delete from employees where id_empl = %s"
+        emp_pos = "delete from emp_pos where id_worker = %s"
+
+        self.cursor.execute(employees, (id_empl,))
+        self.cursor.execute(emp_pos, (id_empl,))
+        self.connection.commit()
 
     def insert_employees(self, fio, rental_date, rate, spec, phone):
 

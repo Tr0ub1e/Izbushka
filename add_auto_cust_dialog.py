@@ -6,7 +6,7 @@ from db_tools import autowork_db
 class AddAutoCust(QtWidgets.QDialog):
     """docstring for AddAutoCust."""
 
-    def __init__(self, connection, cursor):
+    def __init__(self, connection, cursor, *args):
         super(AddAutoCust, self).__init__()
 
         self.dial = QtWidgets.QDialog()
@@ -16,20 +16,45 @@ class AddAutoCust(QtWidgets.QDialog):
         self.db.connection = connection
         self.db.cursor = cursor
 
+        self.id_client, self.fio = args
+
         self.dial_ui.setupUi(self.dial)
         self.dial_ui.retranslateUi(self.dial)
 
+        self.fill_data()
         self.fill_comp()
+
         self.dial_ui.markAuto.currentTextChanged.connect(self.fill_mark)
 
-        self.fill_fam()
-        self.dial_ui.famList.currentTextChanged.connect(self.fill_name)
-        self.dial_ui.nameList.currentTextChanged.connect(self.fill_fath)
-        self.dial_ui.fathList.currentTextChanged.connect(self.fill_phone)
-
-#        self.dial_ui.pushButton.clicked.connect(self.insert_data)
+        self.dial_ui.pushButton.clicked.connect(self.insert_data)
 
         self.dial.exec_()
+
+    def insert_data(self):
+
+        try:
+            car_number = self.dial_ui.numberEdit.text()
+
+            mark = self.dial_ui.markAuto.currentText()
+            model = self.dial_ui.modelAuto.currentText()
+
+            id_auto = self.db.get_car(mark, model)
+
+            self.db.insert_auto(self.id_client, *id_auto, car_number)
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            self.dial.close()
+
+    def fill_data(self):
+
+        fio = self.fio.split(' ')
+        self.dial_ui.famList.addItem(fio[0])
+        self.dial_ui.nameList.addItem(fio[1])
+        self.dial_ui.fathList.addItem(fio[2])
+        self.fill_phone()
 
     def fill_comp(self):
 
@@ -43,6 +68,7 @@ class AddAutoCust(QtWidgets.QDialog):
         for model in self.db.get_models(value):
             self.dial_ui.modelAuto.addItem(str(*model))
 
+    """
     def fill_fam(self):
 
         for i in self.db.get_fam():
@@ -63,13 +89,11 @@ class AddAutoCust(QtWidgets.QDialog):
 
         for i in self.db.get_fath(fam, name):
             self.dial_ui.fathList.addItem(str(*i))
+    """
 
-    def fill_phone(self, fath):
+    def fill_phone(self):
 
         self.dial_ui.phoneList.clear()
 
-        fam = self.dial_ui.famList.currentText()
-        name = self.dial_ui.nameList.currentText()
-
-        for i in self.db.get_phone(fam, name, fath):
+        for i in self.db.get_phone(self.id_client):
             self.dial_ui.phoneList.addItem(str(*i))

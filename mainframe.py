@@ -42,7 +42,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         try:
             self.close_db()
 
+            self.ui.emplTree.clear()
+            self.ui.clientTree.clear()
+            self.clear_labels()
+
             self.ui.addEmpl.disconnect()
+            self.ui.changeEmpl.disconnect()
+            self.ui.delEmpl.disconnect()
             self.ui.addCust.disconnect()
             self.ui.addCar.disconnect()
 
@@ -68,12 +74,12 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
             self.ui.addEmpl.clicked.connect(self.raise_add_emp)
             self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
+            self.ui.delEmpl.clicked.connect(self.delete_empl)
             self.ui.addCust.clicked.connect(self.raise_add_cust)
             self.ui.addCar.clicked.connect(self.raise_add_auto)
 
             self.employees()
             self.clients()
-            #self.debug_tree()
 
         except Exception as e:
             print(e)
@@ -82,7 +88,8 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
     def raise_add_auto(self):
         """
         """
-        my_dial = AddAutoCust(self.connection, self.cursor)
+        fio, id_client = self.ui.clientTree.currentItem().text(0).split(":")
+        my_dial = AddAutoCust(self.connection, self.cursor, id_client, fio)
 
     def raise_add_emp(self):
         """
@@ -91,6 +98,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         my_dial = EmpDial(self.show_spec(), self.connection, \
                                                     self.cursor, 'insert')
         self.ui.emplTree.clear()
+        self.clear_labels()
         self.employees()
 
     def raise_change_empl(self):
@@ -107,6 +115,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                 "update", _)
 
         self.ui.emplTree.clear()
+        self.clear_labels()
         self.employees()
 
     def raise_add_cust(self):
@@ -116,6 +125,30 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         my_dial = CustDial(self.connection, self.cursor)
         self.ui.clientTree.clear()
         self.clients()
+
+    def delete_empl(self):
+
+        _, id_empl = self.ui.emplTree.currentItem().text(0).split(':')
+        msg = QtWidgets.QMessageBox()
+
+        try:
+            self.delete_empl_by_id(id_empl)
+
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText("Удаление выполнено успешно!")
+            msg.setWindowTitle("Удаление")
+
+            self.ui.emplTree.clear()
+            self.employees()
+
+        except:
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка удаления")
+            msg.setInformativeText('Произошел сбой в удалении данных')
+            msg.setWindowTitle("Ошибка")
+
+        finally:
+            msg.exec_()
 
     def clients(self):
         """
@@ -129,9 +162,11 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             parent.setFlags(parent.flags())
             parent.setText(0, fam)
 
-            for fio in self.get_fio(fam):
+            for _id, fio in self.get_fio(fam):
                 child = QtWidgets.QTreeWidgetItem(parent)
-                child.setText(0, *fio)
+                child.setText(0, fio+":"+str(_id))
+
+        self.ui.clientTree.itemSelectionChanged.connect(self.clients_table)
 
     def employees(self):
         """
@@ -156,6 +191,16 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.tableWidget.setRowCount(0)
         self.ui.tableWidget.setColumnCount(0)
 
+    def clear_labels(self):
+
+        text = "NULL"
+
+        self.ui.fioLab.setText(text)
+        self.ui.dateLab.setText(text)
+        self.ui.phoneLab.setText(text)
+        self.ui.specLab.setText(text)
+        self.ui.rateLab.setText(text)
+
     def empl_tree_items(self):
 
         if not self.ui.emplTree.currentItem().text(0) in \
@@ -168,8 +213,27 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.specLab.setText(self.ui.emplTree. \
                             currentItem().parent().text(0))
 
+            if self.get_empl(id_empl) == []: return
             _, _, rental_date, rate, phone = tuple(self.get_empl(id_empl)[0])
 
             self.ui.dateLab.setText(str(rental_date))
             self.ui.rateLab.setText(str(rate))
             self.ui.phoneLab.setText(phone)
+
+    def clients_table(self):
+
+        if not self.ui.clientTree.currentItem().text(0) in \
+                                    [j for i in self.get_fam() for j in i]:
+
+            _, id_cust = self.ui.clientTree.currentItem().text(0).split(':')
+
+            self.ui.clientTable.setRowCount(len(self.get_client_cars(id_cust)))
+
+            for _id, item in enumerate(self.get_client_cars(id_cust)):
+
+                self.ui.clientTable.setItem(_id, 0, \
+                                        QtWidgets.QTableWidgetItem(item[0]))
+                self.ui.clientTable.setItem(_id, 1, \
+                                        QtWidgets.QTableWidgetItem(item[1]))
+                self.ui.clientTable.setItem(_id, 2, \
+                                        QtWidgets.QTableWidgetItem(item[2]))
