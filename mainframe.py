@@ -6,7 +6,7 @@ from connection_dialog import ConDial
 from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
 from add_auto_cust_dialog import AddAutoCust
-
+from extended_QTreeItem import Ext_Item
 
 class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
@@ -40,18 +40,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         msg.setWindowTitle("Выход")
 
         try:
+            self.auxiliary()
+
             self.close_db()
-
-            self.ui.emplTree.clear()
-            self.ui.clientTree.clear()
-            self.clear_labels()
-
-            self.ui.addEmpl.disconnect()
-            self.ui.changeEmpl.disconnect()
-            self.ui.delEmpl.disconnect()
-            self.ui.addCust.disconnect()
-            self.ui.addCar.disconnect()
-
             msg.exec_()
 
         except Exception as e:
@@ -75,6 +66,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.addEmpl.clicked.connect(self.raise_add_emp)
             self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
             self.ui.delEmpl.clicked.connect(self.delete_empl)
+
             self.ui.addCust.clicked.connect(self.raise_add_cust)
             self.ui.addCar.clicked.connect(self.raise_add_auto)
 
@@ -103,13 +95,14 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def raise_change_empl(self):
 
+        id_empl = self.ui.emplTree.currentItem().id_item
         fio = self.ui.fioLab.text().split(' ')
         spec = self.ui.specLab.text()
         date_ = datetime.strptime(self.ui.dateLab.text(), '%Y-%m-%d').date()
         phone = self.ui.phoneLab.text()
         rate = self.ui.rateLab.text()
 
-        _ = (*fio, date_, rate, phone, spec)
+        _ = (id_empl, *fio, date_, rate, phone, spec)
 
         my_dial = EmpDial(self.show_spec(), self.connection, self.cursor,
                 "update", _)
@@ -128,7 +121,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def delete_empl(self):
 
-        _, id_empl = self.ui.emplTree.currentItem().text(0).split(':')
+        id_empl = self.ui.emplTree.currentItem().id_item
         msg = QtWidgets.QMessageBox()
 
         try:
@@ -149,6 +142,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         finally:
             msg.exec_()
+
+    def delete_cust(self):
+        pass
+
 
     def clients(self):
         """
@@ -178,8 +175,8 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             parent.setText(0, name[1])
 
             for fio, id_empl in self.emp_pos(name[1]):
-                child = QtWidgets.QTreeWidgetItem(parent)
-                child.setText(0, "{}: {}".format(fio, id_empl))
+                child = Ext_Item(parent, id_empl)
+                child.setText(0, "{}".format(fio))
 
         self.ui.emplTree.itemSelectionChanged.connect(self.empl_tree_items)
 
@@ -187,9 +184,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         Очистка таблицы, удаление стобцов и колонок
         """
-        self.ui.tableWidget.clear()
-        self.ui.tableWidget.setRowCount(0)
-        self.ui.tableWidget.setColumnCount(0)
+        self.ui.clientTable.setRowCount(0)
 
     def clear_labels(self):
 
@@ -206,7 +201,8 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         if not self.ui.emplTree.currentItem().text(0) in \
                                         [x for _, x in self.show_spec()]:
 
-            fio, id_empl = self.ui.emplTree.currentItem().text(0).split(':')
+            fio = self.ui.emplTree.currentItem().text(0)
+            id_empl = self.ui.emplTree.currentItem().id_item
 
             self.ui.fioLab.setText(fio)
 
@@ -219,6 +215,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.dateLab.setText(str(rental_date))
             self.ui.rateLab.setText(str(rate))
             self.ui.phoneLab.setText(phone)
+
 
     def clients_table(self):
 
@@ -237,3 +234,17 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                                         QtWidgets.QTableWidgetItem(item[1]))
                 self.ui.clientTable.setItem(_id, 2, \
                                         QtWidgets.QTableWidgetItem(item[2]))
+
+    def auxiliary(self):
+
+        self.ui.emplTree.clear()
+        self.ui.clientTree.clear()
+        self.clear_table()
+        self.clear_labels()
+
+        self.ui.addEmpl.disconnect()
+        self.ui.changeEmpl.disconnect()
+        self.ui.delEmpl.disconnect()
+
+        self.ui.addCust.disconnect()
+        self.ui.addCar.disconnect()

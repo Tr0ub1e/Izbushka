@@ -235,6 +235,12 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
       <property name="gridStyle">
        <enum>Qt::SolidLine</enum>
       </property>

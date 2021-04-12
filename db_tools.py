@@ -40,7 +40,7 @@ class autowork_db():
                 """
 
         self.cursor.execute(query, (id_cust,))
-        
+
         return self.cursor.fetchall()
 
     def get_car(self, mark, model):
@@ -75,30 +75,6 @@ class autowork_db():
 
         return self.cursor.fetchall()
 
-    def get_name(self, fam):
-        querry = """
-
-        select distinct substring_index(substring_index(fio, ' ', 2), ' ', -1)
-        FROM autowork.customer
-        where substring_index(fio, ' ', 1) = %s
-
-        """
-
-        self.cursor.execute(querry, (fam,))
-
-        return self.cursor.fetchall()
-
-    def get_fath(self, fam, name):
-        querry = """
-        select distinct substring_index(fio, ' ', -1) FROM autowork.customer
-        where
-        substring_index(fio, ' ', 1) = %s and
-	    substring_index(substring_index(fio, ' ', 2), ' ', -1) = %s
-        """
-        self.cursor.execute(querry, (fam, name))
-
-        return self.cursor.fetchall()
-
     def get_phone(self, id_cust):
 
         querry = """
@@ -117,6 +93,19 @@ class autowork_db():
                   """
 
         self.cursor.execute(car_pos, (id_cust, id_auto, car_number))
+        self.connection.commit()
+
+    def delete_auto(self, id_cust, id_car, car_number):
+
+        querry = """
+                delete from client_pos
+                where
+                    id_cust = %s,
+                    id_car = %s,
+                    gov_number = %s
+                """
+
+        self.cursor.execute(querry, (id_cust, id_car, car_number))
         self.connection.commit()
 
     def get_companies(self):
@@ -186,19 +175,6 @@ class autowork_db():
         self.cursor.execute(querry, (id_empl,))
         return self.cursor.fetchall()
 
-    def get_id_empl(self, *args):
-
-        querry = """
-                select id_empl from employees join emp_pos on id_worker = id_empl
-                join specialization on id_pos = id_spec
-                where
-                fio = %s and rental_date = %s and rate = %s and name_spec = %s
-                and phone = %s
-                """
-
-        self.cursor.execute(querry, args)
-        return self.cursor.fetchone()
-
     def update_empl(self, id_empl=None, id_pos=None, d={}):
 
         querry = ("update autowork.employees set ", " where id_empl = %s")
@@ -219,7 +195,7 @@ class autowork_db():
 
             #change credintals
                 _ = querry[0] + "{} = '{}'".format(*i)+querry[1]
-                print(_)
+
                 self.cursor.execute(_, (id_empl,))
                 self.connection.commit()
 
@@ -298,4 +274,33 @@ class autowork_db():
                  """
 
         self.cursor.execute(querry, (fio, phone))
+        self.connection.commit()
+
+    def update_customers(self, id_cust, d={}):
+
+        querry = ("update autowork.customers set ", " where id_cust = %s")
+
+        if d != {}:
+
+            for i in d.items():
+
+                _ = querry[0] + "{} = '{}'".format(*i)+querry[1]
+
+                self.cursor.execute(_, (id_cust,))
+                self.connection.commit()
+
+    def get_cust_id(self, fio, phone):
+
+        querry = "select id_cust from autowork.customers \
+                  where fio = %s and phone = %s"
+
+        self.cursor.execute(querry, (fio, phone))
+
+        return self.cursor.fetchone()
+
+    def delete_car(self, gov_number):
+
+        quarry = "delete from autowork.client_pos where gov_number = %s"
+
+        self.cursor.execute(quarry, (gov_number,))
         self.connection.commit()

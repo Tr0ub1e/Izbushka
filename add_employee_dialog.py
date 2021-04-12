@@ -28,9 +28,7 @@ class EmpDial(QtWidgets.QDialog):
 
             self.fio, self.rental_date, self.rate, \
                                         self.spec, self.phone = self.get_data()
-            self.id_empl = self.db.get_id_empl(self.fio, \
-                self.rental_date.toPyDate(), self.rate, self.spec, self.phone)
-
+                                        
             self.dial_ui.pushButton.clicked.connect(self.update_data)
 
 
@@ -75,9 +73,10 @@ class EmpDial(QtWidgets.QDialog):
         _ = self.get_data()
         self.db.insert_employees(*_)
 
-    def fill_data(self, fam, name, fath, date, rate, phone, spec):
+    def fill_data(self, id_empl, fam, name, fath, date, rate, phone, spec):
 
         try:
+            self.id_empl = id_empl
             self.dial_ui.famEdit.setText(fam)
             self.dial_ui.nameEdit.setText(name)
             self.dial_ui.fathEdit.setText(fath)
@@ -115,7 +114,7 @@ class EmpDial(QtWidgets.QDialog):
         if self.phone != phone:
             data['phone'] = phone
 
-        self.db.update_empl(*self.id_empl, *id_pos, d=data)
+        self.db.update_empl(self.id_empl, *id_pos, d=data)
 
     def error_msg(self):
 

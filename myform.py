@@ -97,6 +97,8 @@ class Ui_MainWindow(object):
         self.clientTable = QtWidgets.QTableWidget(self.tab_2)
         self.clientTable.setGeometry(QtCore.QRect(300, 10, 581, 221))
         self.clientTable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContentsOnFirstShow)
+        self.clientTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.clientTable.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.clientTable.setGridStyle(QtCore.Qt.SolidLine)
         self.clientTable.setObjectName("clientTable")
         self.clientTable.setColumnCount(3)
