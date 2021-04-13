@@ -1,8 +1,10 @@
 from mysql.connector import connect, Error
 from datetime import date
 from PyQt5.QtCore import QDate, Qt
+from db_tools_empl import Employee_db
+from db_tools_cust import Customer_db
 
-class autowork_db():
+class autowork_db(Employee_db, Customer_db):
 
     host = 'localhost'
     __database = 'autowork'
@@ -32,7 +34,7 @@ class autowork_db():
             select
                     company, model, gov_number
             from
-                autowork.client_pos
+                autowork.zakaz
                 join car using(id_car)
                 join customer using(id_cust)
             where
@@ -54,58 +56,28 @@ class autowork_db():
 
         return self.cursor.fetchone()
 
-    def get_fio(self, fam):
-
-        querry = """
-                select id_cust, fio FROM autowork.customer
-                where substring_index(fio, ' ', 1) = %s;
-                """
-
-        self.cursor.execute(querry, (fam,))
-
-        return self.cursor.fetchall()
-
-    def get_fam(self):
-        querry = """
-                select distinct substring_index(fio, ' ', 1)
-                FROM autowork.customer
-                 """
-
-        self.cursor.execute(querry)
-
-        return self.cursor.fetchall()
-
-    def get_phone(self, id_cust):
-
-        querry = """
-                select phone from autowork.customer
-                where id_cust = %s
-                """
-        self.cursor.execute(querry, (id_cust,))
-        return self.cursor.fetchall()
-
-    def insert_auto(self, id_cust, id_auto, car_number):
+    def insert_auto(self, id_cust, id_auto, car_number, date_z):
 
         car_pos = """
-                    insert into autowork.client_pos
-                    (id_cust, id_car, gov_number)
-                    values (%s, %s, %s)
+                    insert into autowork.zakaz
+                    (id_cust, id_car, gov_number, date_z)
+                    values (%s, %s, %s, %s)
                   """
 
-        self.cursor.execute(car_pos, (id_cust, id_auto, car_number))
+        self.cursor.execute(car_pos, (id_cust, id_auto, car_number, date_z))
         self.connection.commit()
 
-    def delete_auto(self, id_cust, id_car, car_number):
+    def delete_auto(self, id_cust, car_number, date_z):
 
         querry = """
-                delete from client_pos
+                delete from autowork.zakaz
                 where
                     id_cust = %s and
-                    id_car = %s and
-                    gov_number = %s
+                    gov_number = %s and
+                    date_z = %s
                 """
 
-        self.cursor.execute(querry, (id_cust, id_car, car_number))
+        self.cursor.execute(querry, (id_cust, car_number, date_z))
         self.connection.commit()
 
     def get_companies(self):
@@ -153,171 +125,3 @@ class autowork_db():
         self.cursor.execute(query, (name_spec,))
 
         return self.cursor.fetchall()
-
-    def show_employees(self):
-
-        querry = """
-                select fio, rental_date, rate, name_spec, phone
-                from employees join emp_pos on id_worker = id_empl
-                join specialization on id_pos = id_spec
-                """
-
-        self.cursor.execute(querry)
-        return self.cursor.fetchall()
-
-    def get_empl(self, id_empl):
-
-        querry = """
-                select * from autowork.employees
-                where id_empl = %s
-                """
-
-        self.cursor.execute(querry, (id_empl,))
-        return self.cursor.fetchall()
-
-    def update_empl(self, id_empl=None, id_pos=None, d={}):
-
-        querry = ("update autowork.employees set ", " where id_empl = %s")
-        pos = ("update autowork.emp_pos set id_pos = %s where id_worker = %s")
-
-        #change spec
-        if id_empl != None and id_pos != None:
-
-            if not isinstance(id_empl, int) or not isinstance(id_pos, int):
-                raise TypeError
-
-            self.cursor.execute(pos, (id_pos, id_empl))
-            self.connection.commit()
-
-        if d != {}:
-
-            for i in d.items():
-
-            #change credintals
-                _ = querry[0] + "{} = '{}'".format(*i)+querry[1]
-
-                self.cursor.execute(_, (id_empl,))
-                self.connection.commit()
-
-    def delete_empl_by_id(self, id_empl):
-
-        employees = "delete from employees where id_empl = %s"
-        emp_pos = "delete from emp_pos where id_worker = %s"
-
-        self.cursor.execute(employees, (id_empl,))
-        self.cursor.execute(emp_pos, (id_empl,))
-        self.connection.commit()
-
-    def insert_employees(self, fio, rental_date, rate, spec, phone):
-
-        querry = """
-                    insert into autowork.employees
-                    (fio, rental_date, rate, phone)
-                    values(%s, %s, %s, %s)
-                 """
-
-        id_spec_q = """
-                    select id_spec from autowork.specialization
-                    where name_spec = %s
-                    """
-
-        id_empl_q = """
-                    select id_empl from autowork.employees
-                    where fio = %s and rental_date = %s and rate = %s
-                    and phone = %s
-                    """
-
-        emp_pos = """
-                    insert into autowork.emp_pos(id_worker, id_pos)
-                    values (%s, %s)
-                  """
-        #добавление нового человека
-        try:
-            self.cursor.execute(querry, \
-                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
-            self.connection.commit()
-
-        except Exception as e:
-            print(querry)
-            print(e)
-
-        #получение его ключа
-        try:
-            self.cursor.execute(id_empl_q, \
-                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
-            id_empl = self.cursor.fetchone()
-
-        except Exception as e:
-            print(id_empl_q)
-            print(e)
-
-        #получить ключ специальности
-        self.cursor.execute(id_spec_q, (spec,))
-        id_spec = self.cursor.fetchone()
-
-        #связать со специальностями
-        self.cursor.execute(emp_pos, (*id_empl, *id_spec))
-        self.connection.commit()
-
-    def show_customers(self):
-
-        querry = 'select * from customer'
-        self.cursor.execute(querry)
-
-        return self.cursor.fetchall()
-
-    def delete_customer(self, id_cust):
-
-        querry = """
-                delete from autowork.customer
-                where id_cust = %s
-                """
-        self.cursor.execute(querry, (id_cust,))
-        self.connection.commit()
-
-    def insert_customers(self, fio, phone):
-
-        querry = """
-                    insert into customer(fio, phone)
-                    values(%s, %s)
-                 """
-
-        self.cursor.execute(querry, (fio, phone))
-        self.connection.commit()
-
-    def update_customers(self, id_cust, d={}):
-
-        querry = ("update autowork.customer set ", " where id_cust = %s")
-
-        if d != {}:
-
-            for i in d.items():
-
-                _ = querry[0] + "{} = '{}'".format(*i)+querry[1]
-
-                self.cursor.execute(_, (id_cust,))
-                self.connection.commit()
-
-    def get_cust(self, id_cust):
-
-        q = "select fio, phone, order_count from customer where id_cust = %s"
-
-        self.cursor.execute(q, (id_cust,))
-
-        return self.cursor.fetchone()
-
-    def get_cust_id(self, fio, phone):
-
-        querry = "select id_cust from autowork.customers \
-                  where fio = %s and phone = %s"
-
-        self.cursor.execute(querry, (fio, phone))
-
-        return self.cursor.fetchone()
-
-    def delete_car(self, gov_number):
-
-        quarry = "delete from autowork.client_pos where gov_number = %s"
-
-        self.cursor.execute(quarry, (gov_number,))
-        self.connection.commit()

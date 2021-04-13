@@ -6,7 +6,7 @@ from db_tools import autowork_db
 class AddAutoCust(QtWidgets.QDialog):
     """docstring for AddAutoCust."""
 
-    def __init__(self, connection, cursor, *args):
+    def __init__(self, connection, cursor, *args, **kwargs):
         super(AddAutoCust, self).__init__()
 
         self.dial = QtWidgets.QDialog()
@@ -30,6 +30,9 @@ class AddAutoCust(QtWidgets.QDialog):
 
         self.dial.exec_()
 
+    def fill_usluga(self):
+        pass
+
     def insert_data(self):
 
         try:
@@ -51,10 +54,10 @@ class AddAutoCust(QtWidgets.QDialog):
     def fill_data(self):
 
         fio = self.fio.split(' ')
-        self.dial_ui.famList.addItem(fio[0])
-        self.dial_ui.nameList.addItem(fio[1])
-        self.dial_ui.fathList.addItem(fio[2])
-        self.fill_phone()
+        self.dial_ui.famEdit.setText(fio[0])
+        self.dial_ui.nameEdit.setText(fio[1])
+        self.dial_ui.fathEdit.setText(fio[2])
+        self.dial_ui.phoneEdit.setText(str(self.db.get_phone(self.id_client)[0]))
 
     def fill_comp(self):
 
@@ -67,33 +70,3 @@ class AddAutoCust(QtWidgets.QDialog):
 
         for model in self.db.get_models(value):
             self.dial_ui.modelAuto.addItem(str(*model))
-
-    """
-    def fill_fam(self):
-
-        for i in self.db.get_fam():
-            self.dial_ui.famList.addItem(str(*i))
-
-    def fill_name(self, fam):
-
-        self.dial_ui.nameList.clear()
-
-        for i in self.db.get_name(fam):
-            self.dial_ui.nameList.addItem(str(*i))
-
-    def fill_fath(self, name):
-
-        self.dial_ui.fathList.clear()
-
-        fam = self.dial_ui.famList.currentText()
-
-        for i in self.db.get_fath(fam, name):
-            self.dial_ui.fathList.addItem(str(*i))
-    """
-
-    def fill_phone(self):
-
-        self.dial_ui.phoneList.clear()
-
-        for i in self.db.get_phone(self.id_client):
-            self.dial_ui.phoneList.addItem(str(*i))

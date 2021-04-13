@@ -71,8 +71,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.delCust.clicked.connect(self.delete_cust)
             self.ui.changeCust.clicked.connect(self.raise_change_cust)
 
-            self.ui.addCar.clicked.connect(self.raise_add_auto)
-            self.ui.delCar.clicked.connect(self.delete_cust_car)
+            self.ui.addZakaz.clicked.connect(self.raise_add_auto)
 
             self.employees()
             self.clients()
@@ -299,5 +298,5 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.delEmpl.disconnect()
 
         self.ui.addCust.disconnect()
+        self.ui.changeCust.disconnect()
         self.ui.delCust.disconnect()
-        self.ui.addCar.disconnect()

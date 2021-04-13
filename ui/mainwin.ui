@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>750</height>
+    <width>1055</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
-      <width>901</width>
-      <height>591</height>
+      <y>10</y>
+      <width>1041</width>
+      <height>681</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -48,7 +48,7 @@
         <x>10</x>
         <y>10</y>
         <width>270</width>
-        <height>450</height>
+        <height>621</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -130,7 +130,7 @@
        <rect>
         <x>550</x>
         <y>250</y>
-        <width>331</width>
+        <width>481</width>
         <height>211</height>
        </rect>
       </property>
@@ -174,7 +174,7 @@
      <widget class="QPushButton" name="addCust">
       <property name="geometry">
        <rect>
-        <x>750</x>
+        <x>900</x>
         <y>470</y>
         <width>131</width>
         <height>28</height>
@@ -187,8 +187,8 @@
      <widget class="QPushButton" name="delCust">
       <property name="geometry">
        <rect>
-        <x>750</x>
-        <y>520</y>
+        <x>900</x>
+        <y>570</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -200,27 +200,14 @@
      <widget class="QPushButton" name="changeCust">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>900</x>
         <y>520</y>
         <width>131</width>
         <height>28</height>
        </rect>
       </property>
       <property name="text">
-       <string>Изменить</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="addCar">
-      <property name="geometry">
-       <rect>
-        <x>520</x>
-        <y>470</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Добавить машину</string>
+       <string>Изменить клиента</string>
       </property>
      </widget>
      <widget class="QTableWidget" name="clientTable">
@@ -228,7 +215,7 @@
        <rect>
         <x>300</x>
         <y>10</y>
-        <width>581</width>
+        <width>731</width>
         <height>221</height>
        </rect>
       </property>
@@ -280,18 +267,49 @@
         <string>Гос номер</string>
        </property>
       </column>
+      <column>
+       <property name="text">
+        <string>Статус</string>
+       </property>
+      </column>
      </widget>
-     <widget class="QPushButton" name="delCar">
+     <widget class="QPushButton" name="addZakaz">
       <property name="geometry">
        <rect>
-        <x>520</x>
+        <x>690</x>
+        <y>470</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить заказ</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delZakaz">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
+        <y>570</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить заказ</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="changeZakaz">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
         <y>520</y>
         <width>131</width>
         <height>28</height>
        </rect>
       </property>
       <property name="text">
-       <string>Удалить машину</string>
+       <string>Изменить заказ</string>
       </property>
      </widget>
     </widget>
@@ -302,10 +320,10 @@
      <widget class="QTreeWidget" name="specTable">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>299</x>
         <y>10</y>
-        <width>580</width>
-        <height>450</height>
+        <width>731</width>
+        <height>481</height>
        </rect>
       </property>
       <column>
@@ -314,13 +332,13 @@
        </property>
       </column>
      </widget>
-     <widget class="QTreeWidget" name="specTree">
+     <widget class="QTreeWidget" name="uslugiTree">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>11</y>
         <width>270</width>
-        <height>450</height>
+        <height>621</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -329,11 +347,53 @@
       <property name="styleSheet">
        <string notr="true"/>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <column>
        <property name="text">
-        <string notr="true">Специализации</string>
+        <string notr="true">Услуги</string>
        </property>
       </column>
+     </widget>
+     <widget class="QPushButton" name="addUsluga">
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>500</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить услугу</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delUsluga">
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>600</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить услугу</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="changeUsluga">
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>550</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Изменить </string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
@@ -443,7 +503,7 @@
        <rect>
         <x>460</x>
         <y>10</y>
-        <width>421</width>
+        <width>571</width>
         <height>261</height>
        </rect>
       </property>
@@ -508,8 +568,8 @@
      <widget class="QPushButton" name="delEmpl">
       <property name="geometry">
        <rect>
-        <x>740</x>
-        <y>340</y>
+        <x>900</x>
+        <y>390</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -521,7 +581,7 @@
      <widget class="QPushButton" name="addEmpl">
       <property name="geometry">
        <rect>
-        <x>740</x>
+        <x>900</x>
         <y>290</y>
         <width>131</width>
         <height>28</height>
@@ -534,7 +594,7 @@
      <widget class="QPushButton" name="changeEmpl">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>900</x>
         <y>340</y>
         <width>131</width>
         <height>28</height>
@@ -550,14 +610,20 @@
         <x>10</x>
         <y>10</y>
         <width>271</width>
-        <height>451</height>
+        <height>631</height>
        </rect>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="allColumnsShowFocus">
+       <bool>true</bool>
       </property>
       <attribute name="headerHighlightSections">
        <bool>true</bool>
       </attribute>
       <attribute name="headerShowSortIndicator" stdset="0">
-       <bool>false</bool>
+       <bool>true</bool>
       </attribute>
       <column>
        <property name="text">
@@ -573,7 +639,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>1055</width>
      <height>26</height>
     </rect>
    </property>
@@ -584,7 +650,16 @@
     <addaction name="make_con"/>
     <addaction name="discon"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Показать</string>
+    </property>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
+    <addaction name="action_3"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="make_con">
@@ -655,6 +730,21 @@
   <action name="add_auto">
    <property name="text">
     <string>Автомобиль</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Автомобили в сервисе</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Занятых сотрудников</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Запчасти на складе</string>
    </property>
   </action>
  </widget>

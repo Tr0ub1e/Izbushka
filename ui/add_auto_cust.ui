@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
+    <width>882</width>
     <height>394</height>
    </rect>
   </property>
@@ -150,7 +150,7 @@
     <string>Отчество клиента</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="famList">
+  <widget class="QLineEdit" name="famEdit">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -159,8 +159,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QComboBox" name="nameList">
+  <widget class="QLineEdit" name="nameEdit">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -169,8 +172,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QComboBox" name="fathList">
+  <widget class="QLineEdit" name="fathEdit">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -179,8 +185,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QComboBox" name="phoneList">
+  <widget class="QLineEdit" name="phoneEdit">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -189,6 +198,77 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="ableUsluga">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>20</y>
+     <width>256</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+   <attribute name="verticalHeaderStretchLastSection">
+    <bool>false</bool>
+   </attribute>
+   <column>
+    <property name="text">
+     <string>Доступные услуги</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="addUsluga">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>110</y>
+     <width>31</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&gt;&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delUsluga">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>170</y>
+     <width>31</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;&lt;</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="chosedUsluga">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>20</y>
+     <width>256</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+   <attribute name="verticalHeaderStretchLastSection">
+    <bool>false</bool>
+   </attribute>
+   <column>
+    <property name="text">
+     <string>Выбранные услуги</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>
