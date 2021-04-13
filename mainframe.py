@@ -68,7 +68,11 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.delEmpl.clicked.connect(self.delete_empl)
 
             self.ui.addCust.clicked.connect(self.raise_add_cust)
+            self.ui.delCust.clicked.connect(self.delete_cust)
+            self.ui.changeCust.clicked.connect(self.raise_change_cust)
+
             self.ui.addCar.clicked.connect(self.raise_add_auto)
+            self.ui.delCar.clicked.connect(self.delete_cust_car)
 
             self.employees()
             self.clients()
@@ -80,7 +84,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
     def raise_add_auto(self):
         """
         """
-        fio, id_client = self.ui.clientTree.currentItem().text(0).split(":")
+        fio = self.ui.clientTree.currentItem().text(0)
+        id_client = self.ui.clientTree.currentItem().id_item
+
         my_dial = AddAutoCust(self.connection, self.cursor, id_client, fio)
 
     def raise_add_emp(self):
@@ -115,7 +121,19 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         Выводит диалог добавления нового клиента
         """
-        my_dial = CustDial(self.connection, self.cursor)
+        my_dial = CustDial(self.connection, self.cursor, "insert")
+        self.ui.clientTree.clear()
+        self.clients()
+
+    def raise_change_cust(self):
+
+        fio = self.ui.fioCli.text()
+        phone = self.ui.phoneCli.text()
+        id_cust = self.ui.clientTree.currentItem().id_item
+
+        up_st = (id_cust, fio, phone)
+
+        my_dial = CustDial(self.connection, self.cursor, "update", up_st)
         self.ui.clientTree.clear()
         self.clients()
 
@@ -144,8 +162,36 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.exec_()
 
     def delete_cust(self):
-        pass
 
+        if not self.ui.clientTree.currentItem().text(0) in \
+                                    [j for i in self.get_fam() for j in i]:
+
+            id_cust = self.ui.clientTree.currentItem().id_item
+            self.delete_customer(id_cust)
+
+            self.ui.clientTree.clear()
+            self.clear_table()
+            self.clients()
+
+    def delete_cust_car(self):
+
+        if not self.ui.clientTree.currentItem().text(0) in \
+                                    [j for i in self.get_fam() for j in i]:
+
+            id_cust =  self.ui.clientTree.currentItem().id_item
+            gov_number = self.ui.clientTable.item(self.ui.\
+                            clientTable.currentRow(), 2).text()
+
+            mark = self.ui.clientTable.item(self.ui.\
+                            clientTable.currentRow(), 0).text()
+            model = self.ui.clientTable.item(self.ui.\
+                            clientTable.currentRow(), 1).text()
+
+            id_car = self.get_car(mark, model)
+
+            self.delete_auto(id_cust, *id_car, gov_number)
+
+            self.clients_table()
 
     def clients(self):
         """
@@ -160,8 +206,8 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             parent.setText(0, fam)
 
             for _id, fio in self.get_fio(fam):
-                child = QtWidgets.QTreeWidgetItem(parent)
-                child.setText(0, fio+":"+str(_id))
+                child = Ext_Item(parent, _id)
+                child.setText(0, fio)
 
         self.ui.clientTree.itemSelectionChanged.connect(self.clients_table)
 
@@ -216,13 +262,19 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.rateLab.setText(str(rate))
             self.ui.phoneLab.setText(phone)
 
-
     def clients_table(self):
 
         if not self.ui.clientTree.currentItem().text(0) in \
                                     [j for i in self.get_fam() for j in i]:
 
-            _, id_cust = self.ui.clientTree.currentItem().text(0).split(':')
+            id_cust = self.ui.clientTree.currentItem().id_item
+
+            if self.get_cust(id_cust) == None: return
+            fio, phone, orders = self.get_cust(id_cust)
+
+            self.ui.fioCli.setText(fio)
+            self.ui.phoneCli.setText(phone)
+            self.ui.ordersCli.setText(orders)
 
             self.ui.clientTable.setRowCount(len(self.get_client_cars(id_cust)))
 
@@ -247,4 +299,5 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.delEmpl.disconnect()
 
         self.ui.addCust.disconnect()
+        self.ui.delCust.disconnect()
         self.ui.addCar.disconnect()

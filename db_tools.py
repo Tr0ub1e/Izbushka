@@ -100,8 +100,8 @@ class autowork_db():
         querry = """
                 delete from client_pos
                 where
-                    id_cust = %s,
-                    id_car = %s,
+                    id_cust = %s and
+                    id_car = %s and
                     gov_number = %s
                 """
 
@@ -266,6 +266,15 @@ class autowork_db():
 
         return self.cursor.fetchall()
 
+    def delete_customer(self, id_cust):
+
+        querry = """
+                delete from autowork.customer
+                where id_cust = %s
+                """
+        self.cursor.execute(querry, (id_cust,))
+        self.connection.commit()
+
     def insert_customers(self, fio, phone):
 
         querry = """
@@ -278,7 +287,7 @@ class autowork_db():
 
     def update_customers(self, id_cust, d={}):
 
-        querry = ("update autowork.customers set ", " where id_cust = %s")
+        querry = ("update autowork.customer set ", " where id_cust = %s")
 
         if d != {}:
 
@@ -288,6 +297,14 @@ class autowork_db():
 
                 self.cursor.execute(_, (id_cust,))
                 self.connection.commit()
+
+    def get_cust(self, id_cust):
+
+        q = "select fio, phone, order_count from customer where id_cust = %s"
+
+        self.cursor.execute(q, (id_cust,))
+
+        return self.cursor.fetchone()
 
     def get_cust_id(self, fio, phone):
 
