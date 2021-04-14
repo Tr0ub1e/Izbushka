@@ -28,6 +28,15 @@ class autowork_db(Employee_db, Customer_db):
     def close_db(self):
         self.connection.close()
 
+    def get_uslugi(self):
+
+        quarry = "select * from autowork.services"
+
+        self.cursor.execute(quarry)
+
+        return self.cursor.fetchall()
+
+
     def get_client_cars(self, id_cust):
 
         query = """
