@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from add_auto_cust import Ui_Dialog
 from db_tools import autowork_db
 from datetime import time, timedelta
+from count_parts_dialog import Count_Parts
 
 class AddAutoCust(QtWidgets.QDialog):
     """docstring for AddAutoCust."""
@@ -19,6 +20,8 @@ class AddAutoCust(QtWidgets.QDialog):
         self.id_client, self.fio = args
 
         self.cost = 0
+        self.part_cost = 0
+
         self.duration = time(0,0,0)
         self.duration.strftime("%H:%M:%S")
 
@@ -30,9 +33,14 @@ class AddAutoCust(QtWidgets.QDialog):
         self.fill_usluga()
 
         self.dial_ui.markAuto.currentTextChanged.connect(self.fill_mark)
+        self.dial_ui.modelAuto.currentTextChanged.connect(self.fill_zapch)
 
         self.dial_ui.addUsluga.clicked.connect(self.add_uslugi)
         self.dial_ui.delUsluga.clicked.connect(self.del_uslugi)
+
+        self.dial_ui.addZapch.clicked.connect(self.add_parts)
+        self.dial_ui.delZapch.clicked.connect(self.del_parts)
+
         self.dial_ui.pushButton.clicked.connect(self.insert_data)
 
         self.dial.exec_()
@@ -55,11 +63,39 @@ class AddAutoCust(QtWidgets.QDialog):
             self.dial_ui.ableUsluga.setItem(i, 2, \
                             QtWidgets.QTableWidgetItem(str(items[3])))
 
+    def fill_zapch(self):
+
+        self.dial_ui.chosedParts.setRowCount(0)
+
+        mark = self.dial_ui.markAuto.currentText()
+        model = self.dial_ui.modelAuto.currentText()
+
+        self.id_part = []
+        self.chosed_part = []
+
+        if isinstance(mark, str) and isinstance(model, str):
+            id_auto = self.db.get_car(mark, model)
+
+
+        if id_auto:
+            self.dial_ui.ableParts.setRowCount(len(self.db.get_zapchasti_car(*id_auto)))
+
+            for row, i in enumerate(self.db.get_zapchasti_car(*id_auto)):
+
+                id_z, kol_vo, _, name_z, cost = i
+
+                self.id_part.append(id_z)
+
+                self.dial_ui.ableParts.setItem(row, 0, QtWidgets.QTableWidgetItem(name_z))
+                self.dial_ui.ableParts.setItem(row, 1, QtWidgets.QTableWidgetItem(str(kol_vo)))
+                self.dial_ui.ableParts.setItem(row, 2, QtWidgets.QTableWidgetItem(str(cost)))
+
     def add_uslugi(self):
 
         self.dial_ui.chosedUsluga.setRowCount(self.dial_ui.ableUsluga.rowCount())
 
         try:
+
             row = self.dial_ui.ableUsluga.currentRow()
             self.chosed_usluga.append(self.id_usluga[row])
 
@@ -86,6 +122,46 @@ class AddAutoCust(QtWidgets.QDialog):
         except Exception as e:
             print(e)
 
+    def add_parts(self):
+
+        self.dial_ui.chosedParts.setRowCount(self.dial_ui.ableParts.rowCount())
+        self.part_cost = 0
+
+        row = self.dial_ui.ableParts.currentRow()
+        dialog = Count_Parts(self.dial_ui.ableParts.item(row, 1).text())
+        kol_vo = dialog.value
+
+        try:
+            if kol_vo == 0: return
+
+            self.chosed_part.append(self.id_part[row])
+
+            cost = int(self.dial_ui.ableParts.item(row, 2).text())
+            item = self.dial_ui.ableParts.item(row, 0).text()
+
+            self.dial_ui.chosedParts.setItem(row, 0, QtWidgets.QTableWidgetItem(item))
+            self.dial_ui.chosedParts.setItem(row, 1, QtWidgets.QTableWidgetItem(str(kol_vo)))
+            self.dial_ui.chosedParts.setItem(row, 2, QtWidgets.QTableWidgetItem(str(cost*kol_vo)))
+
+            self.count_part_cost(row)
+
+        except Exception as e:
+            print(e)
+
+    def del_parts(self):
+
+        try:
+
+            row = self.dial_ui.ableParts.currentRow()
+            self.chosed_part.remove(self.id_part[row])
+            self.count_part_cost(row, False)
+
+            for i in range(3):
+                self.dial_ui.chosedParts.setItem(row, i, QtWidgets.QTableWidgetItem(" "))
+
+        except Exception as e:
+            print(e)
+
     def count_cost_and_time(self, row, add=True):
 
         try:
@@ -99,6 +175,9 @@ class AddAutoCust(QtWidgets.QDialog):
                 for i in range(3):
                     timeEdit[i] += time_[i]
 
+                for i in range(2):
+                    if timeEdit[i+1] == 60: timeEdit[i] += 1; timeEdit[i+1] = 0
+
                 self.duration = time(*timeEdit)
 
             if not add:
@@ -111,13 +190,32 @@ class AddAutoCust(QtWidgets.QDialog):
                 for i in range(3):
                     timeEdit[i] -= time_[i]
 
+                for i in range(2):
+                    if timeEdit[i+1] < 0: timeEdit[i] -= 1; timeEdit[i+1] += 60
+
                 self.duration = time(*timeEdit)
+
+            self.dial_ui.costEdit.setText(str(self.cost))
+            self.dial_ui.durationEdit.setText(str(self.duration))
+            self.dial_ui.resultEdit.setText(str(self.part_cost+self.cost))
 
         except Exception as e:
             print(e)
 
-        self.dial_ui.costEdit.setText(str(self.cost))
-        self.dial_ui.durationEdit.setText(str(self.duration))
+    def count_part_cost(self, row, add=True):
+
+        try:
+            if add:
+                self.part_cost += int(self.dial_ui.chosedParts.item(row, 2).text())
+
+            else:
+                self.part_cost -= int(self.dial_ui.chosedParts.item(row, 2).text())
+
+        except Exception as e:
+            print(e)
+
+        self.dial_ui.costZapchEdit.setText(str(self.part_cost))
+        self.dial_ui.resultEdit.setText(str(self.part_cost+self.cost))
 
     def insert_data(self):
 

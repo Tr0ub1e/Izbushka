@@ -381,7 +381,7 @@
     <attribute name="title">
      <string>Необходимые детали</string>
     </attribute>
-    <widget class="QTableWidget" name="chosedUsluga_2">
+    <widget class="QTableWidget" name="ableParts">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -418,7 +418,7 @@
       </property>
      </column>
     </widget>
-    <widget class="QTableWidget" name="chosedUsluga_3">
+    <widget class="QTableWidget" name="chosedParts">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -441,7 +441,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string>Детали на складе</string>
+       <string>Детали в заказе</string>
       </property>
      </column>
      <column>
@@ -451,7 +451,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Цена</string>
+       <string>Цена за шт</string>
       </property>
      </column>
     </widget>

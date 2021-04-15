@@ -1,5 +1,4 @@
 from mysql.connector import connect, Error
-from datetime import date
 from PyQt5.QtCore import QDate, Qt
 from db_tools_empl import Employee_db
 from db_tools_cust import Customer_db
@@ -28,6 +27,14 @@ class autowork_db(Employee_db, Customer_db):
     def close_db(self):
         self.connection.close()
 
+    def get_zapchasti_car(self, id_car):
+
+        q = "select * from zapchasti_sklad where id_car = %s"
+
+        self.cursor.execute(q, (id_car,))
+
+        return self.cursor.fetchall()
+
     def get_uslugi(self):
 
         quarry = "select * from autowork.services"
@@ -35,7 +42,6 @@ class autowork_db(Employee_db, Customer_db):
         self.cursor.execute(quarry)
 
         return self.cursor.fetchall()
-
 
     def get_client_cars(self, id_cust):
 
