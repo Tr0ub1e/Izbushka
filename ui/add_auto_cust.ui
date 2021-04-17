@@ -323,6 +323,11 @@
        <string>Длительность</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Кол-во</string>
+      </property>
+     </column>
     </widget>
     <widget class="QLabel" name="label_9">
      <property name="geometry">

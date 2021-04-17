@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui\add_auto_cust.ui'
+# Form implementation generated from reading ui file '.\ui\add_auto_cust.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.2
 #
@@ -97,7 +97,7 @@ class Ui_Dialog(object):
         self.chosedUsluga.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.chosedUsluga.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.chosedUsluga.setObjectName("chosedUsluga")
-        self.chosedUsluga.setColumnCount(3)
+        self.chosedUsluga.setColumnCount(4)
         self.chosedUsluga.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.chosedUsluga.setHorizontalHeaderItem(0, item)
@@ -105,6 +105,8 @@ class Ui_Dialog(object):
         self.chosedUsluga.setHorizontalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
         self.chosedUsluga.setHorizontalHeaderItem(2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.chosedUsluga.setHorizontalHeaderItem(3, item)
         self.chosedUsluga.horizontalHeader().setStretchLastSection(True)
         self.chosedUsluga.verticalHeader().setStretchLastSection(False)
         self.label_9 = QtWidgets.QLabel(self.tab)
@@ -206,6 +208,8 @@ class Ui_Dialog(object):
         item.setText(_translate("Dialog", "Цена"))
         item = self.chosedUsluga.horizontalHeaderItem(2)
         item.setText(_translate("Dialog", "Длительность"))
+        item = self.chosedUsluga.horizontalHeaderItem(3)
+        item.setText(_translate("Dialog", "Кол-во"))
         self.label_9.setText(_translate("Dialog", "Длительность"))
         self.label_3.setText(_translate("Dialog", "Сумма"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Dialog", "Услуги"))

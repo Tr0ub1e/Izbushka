@@ -1,5 +1,6 @@
 from mysql.connector import connect, Error
 from PyQt5.QtCore import QDate, Qt
+import datetime
 from db_tools_empl import Employee_db
 from db_tools_cust import Customer_db
 
@@ -16,6 +17,7 @@ class autowork_db(Employee_db, Customer_db):
             self.connection = connect(host=self.host, user=user,
                             password=password,
                             database=self.__database)
+                            #buffered=True)
 
             self.cursor = self.connection.cursor()
 
@@ -42,6 +44,26 @@ class autowork_db(Employee_db, Customer_db):
         self.cursor.execute(quarry)
 
         return self.cursor.fetchall()
+
+    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, count_serv):
+
+        q = """
+            insert into services_z(id_z, id_serv, cost_serv, count_serv)
+            values (%s, %s, %s, %s)
+            """
+
+        self.cursor.execute(q, (id_z, id_serv, cost_serv, count_serv))
+        self.connection.commit()
+
+    def insert_zap_zakaz(self, id_zap, kol_vo):
+
+        q = """
+            insert into zap_z(id_zap, kol_vo)
+            values (%s, %s)
+            """
+
+        self.cursor.execute(q, (id_zap, kol_vo))
+        self.connection.commit()
 
     def get_client_cars(self, id_cust):
 
@@ -71,16 +93,42 @@ class autowork_db(Employee_db, Customer_db):
 
         return self.cursor.fetchone()
 
-    def insert_auto(self, id_cust, id_auto, car_number, date_z):
+    def insert_zakaz(self, id_cust, id_auto, car_number, duration):
+
+        time = datetime.datetime.now()
+
+        duration = list(map(int, duration.strftime("%H:%M:%S").split(':')))
+        finish_date = time + datetime.timedelta(
+                                    hours=duration[0], minutes=duration[1],
+                                    seconds=duration[2]
+                                    )
 
         car_pos = """
                     insert into autowork.zakaz
-                    (id_cust, id_car, gov_number, date_z)
-                    values (%s, %s, %s, %s)
+                    (id_cust, id_car, gov_number, date_z, finish_date_z)
+                    values (%s, %s, %s, %s, %s);
                   """
 
-        self.cursor.execute(car_pos, (id_cust, id_auto, car_number, date_z))
+        self.cursor.execute(car_pos, (id_cust, id_auto, car_number, time, finish_date))
         self.connection.commit()
+
+        return self.get_id_zakaz(id_cust, id_auto, car_number,
+                                time.strftime("%Y-%m-%d %H:%M:%S"),
+                                finish_date.strftime("%Y-%m-%d %H:%M:%S"))
+
+    def get_id_zakaz(self, *args):
+
+        get_id = """
+                select id_z from autowork.zakaz as z
+                where
+                    z.id_cust = %s and
+                    z.id_car = %s and
+                    z.gov_number = %s and
+                    z.date_z = %s and
+                    z.finish_date_z = %s;
+                 """
+        self.cursor.execute(get_id, args)
+        return self.cursor.fetchone()
 
     def delete_auto(self, id_cust, car_number, date_z):
 

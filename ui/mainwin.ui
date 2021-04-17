@@ -158,19 +158,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="setFilterCust">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>470</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Настроить фильтр</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="addCust">
       <property name="geometry">
        <rect>
@@ -297,19 +284,6 @@
       </property>
       <property name="text">
        <string>Удалить заказ</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="changeZakaz">
-      <property name="geometry">
-       <rect>
-        <x>690</x>
-        <y>520</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Изменить заказ</string>
       </property>
      </widget>
     </widget>
@@ -551,19 +525,6 @@
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QPushButton" name="setFilterEmpl">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>290</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Настроить фильтр</string>
-      </property>
      </widget>
      <widget class="QPushButton" name="delEmpl">
       <property name="geometry">

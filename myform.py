@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui\mainwin.ui'
+# Form implementation generated from reading ui file '.\ui\mainwin.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.2
 #
@@ -79,9 +79,6 @@ class Ui_MainWindow(object):
         self.ordersCli = QtWidgets.QLabel(self.verticalLayoutWidget_4)
         self.ordersCli.setObjectName("ordersCli")
         self.verticalLayout_7.addWidget(self.ordersCli)
-        self.setFilterCust = QtWidgets.QPushButton(self.tab_2)
-        self.setFilterCust.setGeometry(QtCore.QRect(300, 470, 131, 28))
-        self.setFilterCust.setObjectName("setFilterCust")
         self.addCust = QtWidgets.QPushButton(self.tab_2)
         self.addCust.setGeometry(QtCore.QRect(900, 470, 131, 28))
         self.addCust.setObjectName("addCust")
@@ -120,9 +117,6 @@ class Ui_MainWindow(object):
         self.delZakaz = QtWidgets.QPushButton(self.tab_2)
         self.delZakaz.setGeometry(QtCore.QRect(690, 570, 131, 28))
         self.delZakaz.setObjectName("delZakaz")
-        self.changeZakaz = QtWidgets.QPushButton(self.tab_2)
-        self.changeZakaz.setGeometry(QtCore.QRect(690, 520, 131, 28))
-        self.changeZakaz.setObjectName("changeZakaz")
         self.tabWidget.addTab(self.tab_2, "")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
@@ -224,9 +218,6 @@ class Ui_MainWindow(object):
         self.phoneLab = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.phoneLab.setObjectName("phoneLab")
         self.verticalLayout_3.addWidget(self.phoneLab)
-        self.setFilterEmpl = QtWidgets.QPushButton(self.tab_3)
-        self.setFilterEmpl.setGeometry(QtCore.QRect(290, 290, 131, 28))
-        self.setFilterEmpl.setObjectName("setFilterEmpl")
         self.delEmpl = QtWidgets.QPushButton(self.tab_3)
         self.delEmpl.setGeometry(QtCore.QRect(900, 390, 131, 28))
         self.delEmpl.setObjectName("delEmpl")
@@ -311,7 +302,6 @@ class Ui_MainWindow(object):
         self.fioCli.setText(_translate("MainWindow", "NULL"))
         self.phoneCli.setText(_translate("MainWindow", "NULL"))
         self.ordersCli.setText(_translate("MainWindow", "NULL"))
-        self.setFilterCust.setText(_translate("MainWindow", "Настроить фильтр"))
         self.addCust.setText(_translate("MainWindow", "Добавить клиента"))
         self.delCust.setText(_translate("MainWindow", "Удалить клиента"))
         self.changeCust.setText(_translate("MainWindow", "Изменить клиента"))
@@ -326,7 +316,6 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Статус"))
         self.addZakaz.setText(_translate("MainWindow", "Добавить заказ"))
         self.delZakaz.setText(_translate("MainWindow", "Удалить заказ"))
-        self.changeZakaz.setText(_translate("MainWindow", "Изменить заказ"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Клиенты"))
         self.uslugiTree.setSortingEnabled(True)
         self.addUsluga.setText(_translate("MainWindow", "Добавить услугу"))
@@ -345,7 +334,6 @@ class Ui_MainWindow(object):
         self.rateLab.setText(_translate("MainWindow", "NULL"))
         self.ordersLab.setText(_translate("MainWindow", "NULL"))
         self.phoneLab.setText(_translate("MainWindow", "NULL"))
-        self.setFilterEmpl.setText(_translate("MainWindow", "Настроить фильтр"))
         self.delEmpl.setText(_translate("MainWindow", "Удалить работника"))
         self.addEmpl.setText(_translate("MainWindow", "Добавить работника"))
         self.changeEmpl.setText(_translate("MainWindow", "Изменить"))
