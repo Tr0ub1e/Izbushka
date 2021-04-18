@@ -32,7 +32,9 @@ class AddAutoCust(QtWidgets.QDialog):
 
         self.fill_data()
         self.fill_comp()
+        self.fill_mark()
         self.fill_usluga()
+        self.fill_zapch()
 
         self.dial_ui.markAuto.currentTextChanged.connect(self.fill_mark)
         self.dial_ui.modelAuto.currentTextChanged.connect(self.fill_zapch)
@@ -67,9 +69,6 @@ class AddAutoCust(QtWidgets.QDialog):
         mark = self.dial_ui.markAuto.currentText()
         model = self.dial_ui.modelAuto.currentText()
 
-        self.id_part = []
-        self.chosed_part = []
-
         if isinstance(mark, str) and isinstance(model, str):
             id_auto = self.db.get_car(mark, model)
 
@@ -79,11 +78,9 @@ class AddAutoCust(QtWidgets.QDialog):
 
             for row, i in enumerate(self.db.get_zapchasti_car(*id_auto)):
 
-                id_z, kol_vo, _, name_z, cost = i
+                id_zap, kol_vo, _, name_z, cost = i
 
-                self.id_part.append(id_z)
-
-                self.dial_ui.ableParts.setItem(row, 0, QtWidgets.QTableWidgetItem(name_z))
+                self.dial_ui.ableParts.setItem(row, 0, Ext_TableItem(name_z, id_zap))
                 self.dial_ui.ableParts.setItem(row, 1, QtWidgets.QTableWidgetItem(str(kol_vo)))
                 self.dial_ui.ableParts.setItem(row, 2, QtWidgets.QTableWidgetItem(str(cost)))
 
@@ -96,8 +93,6 @@ class AddAutoCust(QtWidgets.QDialog):
 
             dialog = Count_Parts(self.dial_ui.ableUsluga.item(row, 1).text())
             kol_vo = dialog.value
-
-            #self.chosed_usluga.append(self.id_usluga[row])
 
             for i in range(3):
                 item = self.dial_ui.ableUsluga.takeItem(row, i)
@@ -113,7 +108,6 @@ class AddAutoCust(QtWidgets.QDialog):
 
         try:
             row = self.dial_ui.chosedUsluga.currentRow()
-            #self.chosed_usluga.remove(self.id_usluga[row])
 
             for i in range(3):
                 item = self.dial_ui.chosedUsluga.takeItem(row, i)
@@ -136,12 +130,10 @@ class AddAutoCust(QtWidgets.QDialog):
         try:
             if kol_vo == 0: return
 
-            self.chosed_part.append(self.id_part[row])
-
             cost = int(self.dial_ui.ableParts.item(row, 2).text())
-            item = self.dial_ui.ableParts.item(row, 0).text()
+            item = self.dial_ui.ableParts.item(row, 0)
 
-            self.dial_ui.chosedParts.setItem(row, 0, QtWidgets.QTableWidgetItem(item))
+            self.dial_ui.chosedParts.setItem(row, 0, Ext_TableItem(item.text(), item.id_item))
             self.dial_ui.chosedParts.setItem(row, 1, QtWidgets.QTableWidgetItem(str(kol_vo)))
             self.dial_ui.chosedParts.setItem(row, 2, QtWidgets.QTableWidgetItem(str(cost*kol_vo)))
 
@@ -155,7 +147,6 @@ class AddAutoCust(QtWidgets.QDialog):
         try:
 
             row = self.dial_ui.ableParts.currentRow()
-            self.chosed_part.remove(self.id_part[row])
             self.count_part_cost(row, False)
 
             for i in range(3):
@@ -235,11 +226,16 @@ class AddAutoCust(QtWidgets.QDialog):
 
     def insert_data(self):
         id_usluga = []
+        id_zapch = []
+
         try:
             car_number = self.dial_ui.numberEdit.text()
             mark = self.dial_ui.markAuto.currentText()
             model = self.dial_ui.modelAuto.currentText()
             id_auto = self.db.get_car(mark, model)
+            vincode = self.dial_ui.vincodeEdit.text()
+            enginecode = self.dial_ui.engineEdit.text()
+            milleage = self.dial_ui.milliageEdit.text()
 
             for i in range(self.dial_ui.chosedUsluga.rowCount()):
                 try:
@@ -251,11 +247,23 @@ class AddAutoCust(QtWidgets.QDialog):
                 except:
                     continue
 
-            id_z = self.db.insert_zakaz(self.id_client, *id_auto, car_number, self.duration)
+            for i in range(self.dial_ui.chosedParts.rowCount()):
+                try:
+                    id_zapch.append(
+                                (self.dial_ui.chosedParts.item(i, 0).id_item,
+                                int(self.dial_ui.chosedParts.item(i, 1).text()))
+                                )
+                except:
+                    continue
 
-            #self.db.insert_zap_zakaz()
+            id_z = self.db.insert_zakaz(self.id_client, *id_auto, car_number,
+                self.duration, vincode, enginecode, milleage)
+
             for id_serv, cost_serv, count_serv in id_usluga:
                 self.db.insert_uslugi_zakaz(*id_z, id_serv, cost_serv, count_serv)
+
+            for id_zap, kol_vo in id_zapch:
+                self.db.insert_zap_zakaz(*id_z, id_zap, kol_vo)
 
         except Exception as e:
             print(e)
@@ -276,9 +284,11 @@ class AddAutoCust(QtWidgets.QDialog):
         for mark in self.db.get_companies():
             self.dial_ui.markAuto.addItem(str(*mark))
 
-    def fill_mark(self, value):
+    def fill_mark(self):
 
         self.dial_ui.modelAuto.clear()
+
+        value = self.dial_ui.markAuto.currentText()
 
         for model in self.db.get_models(value):
             self.dial_ui.modelAuto.addItem(str(*model))

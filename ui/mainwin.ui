@@ -137,6 +137,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
         <widget class="QLabel" name="fioCli">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -144,6 +149,11 @@
        </item>
        <item>
         <widget class="QLabel" name="phoneCli">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -151,6 +161,11 @@
        </item>
        <item>
         <widget class="QLabel" name="ordersCli">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -369,6 +384,58 @@
        <string>Изменить </string>
       </property>
      </widget>
+     <widget class="QPushButton" name="addTimetable">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>500</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить задание</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delTimetable">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>600</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить задание</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="getZakazInfo">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>550</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Детали задания</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="getInfoUsluga">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>500</y>
+        <width>131</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Детали услуги</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -378,9 +445,9 @@
       <property name="geometry">
        <rect>
         <x>290</x>
-        <y>10</y>
-        <width>166</width>
-        <height>261</height>
+        <y>300</y>
+        <width>171</width>
+        <height>305</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -475,15 +542,20 @@
      <widget class="QWidget" name="verticalLayoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>460</x>
-        <y>10</y>
-        <width>571</width>
-        <height>261</height>
+        <x>470</x>
+        <y>300</y>
+        <width>561</width>
+        <height>301</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QLabel" name="fioLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -491,6 +563,11 @@
        </item>
        <item>
         <widget class="QLabel" name="dateLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -498,6 +575,11 @@
        </item>
        <item>
         <widget class="QLabel" name="specLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -505,6 +587,11 @@
        </item>
        <item>
         <widget class="QLabel" name="rateLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -512,6 +599,11 @@
        </item>
        <item>
         <widget class="QLabel" name="ordersLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -519,6 +611,11 @@
        </item>
        <item>
         <widget class="QLabel" name="phoneLab">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>NULL</string>
          </property>
@@ -529,8 +626,8 @@
      <widget class="QPushButton" name="delEmpl">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>390</y>
+        <x>880</x>
+        <y>610</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -542,8 +639,8 @@
      <widget class="QPushButton" name="addEmpl">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>290</y>
+        <x>310</x>
+        <y>610</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -555,8 +652,8 @@
      <widget class="QPushButton" name="changeEmpl">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>340</y>
+        <x>590</x>
+        <y>610</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -589,6 +686,49 @@
       <column>
        <property name="text">
         <string notr="true">Работники и специальности</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QTableWidget" name="tasksTable">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>10</y>
+        <width>731</width>
+        <height>271</height>
+       </rect>
+      </property>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>225</number>
+      </attribute>
+      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderCascadingSectionResizes">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Задача</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Автомобиль</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Статус</string>
        </property>
       </column>
      </widget>

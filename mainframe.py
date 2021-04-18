@@ -75,6 +75,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
             self.employees()
             self.clients()
+            self.uslugi()
 
         except Exception as e:
             print(e)
@@ -224,6 +225,19 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                 child.setText(0, "{}".format(fio))
 
         self.ui.emplTree.itemSelectionChanged.connect(self.empl_tree_items)
+
+    def uslugi(self):
+
+        for id_serv, name_serv, _, _ in self.get_uslugi():
+
+            parent = QtWidgets.QTreeWidgetItem(self.ui.uslugiTree)
+            parent.setFlags(parent.flags())
+            parent.setText(0, name_serv)
+
+            for id_z, _, _, _, _, status in self.get_pending_uslugi(id_serv):
+
+                child = Ext_Item(parent, id_z)
+                child.setText(0, "Заказ №{}".format(id_z))
 
     def clear_table(self):
         """
