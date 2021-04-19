@@ -52,14 +52,14 @@ class autowork_db(Employee_db, Customer_db):
         self.cursor.execute(q, (id_serv,))
         return self.cursor.fetchall()
 
-    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, count_serv):
+    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, id_zapch=None):
 
         q = """
-            insert into services_z(id_z, id_serv, cost_serv, count_serv)
+            insert into services_z(id_z, id_serv, cost_serv, id_zapch)
             values (%s, %s, %s, %s)
             """
 
-        self.cursor.execute(q, (id_z, id_serv, cost_serv, count_serv))
+        self.cursor.execute(q, (id_z, id_serv, cost_serv, id_zapch))
         self.connection.commit()
 
     def insert_zap_zakaz(self, id_z, id_zap, kol_vo):
@@ -75,17 +75,31 @@ class autowork_db(Employee_db, Customer_db):
     def get_client_cars(self, id_cust):
 
         query = """
-            select
-                    company, model, gov_number
-            from
-                autowork.zakaz
-                join car using(id_car)
-                join customer using(id_cust)
-            where
-                id_cust = %s
+                select
+                    company, model, gov_number, id_z
+                FROM autowork.zakaz
+                    join services_z using(id_z)
+                    join car using(id_car)
+                where
+                    id_cust = %s
+                group by 3
                 """
-
         self.cursor.execute(query, (id_cust,))
+        return self.cursor.fetchall()
+
+    def get_serv_stat(self, id_cust, id_z):
+
+        query = """
+            select
+                name_serv, status_serv
+            FROM autowork.zakaz
+                join services_z using(id_z)
+                join services using(id_serv)
+            where
+                id_cust = %s and
+                id_z = %s
+                """
+        self.cursor.execute(query, (id_cust, id_z))
 
         return self.cursor.fetchall()
 
@@ -144,17 +158,24 @@ class autowork_db(Employee_db, Customer_db):
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()
 
-    def delete_auto(self, id_cust, car_number, date_z):
+    def delete_auto(self, id_cust, id_auto, car_number, duration,
+                        vincode, enginecode, milleage):
 
         querry = """
                 delete from autowork.zakaz
                 where
                     id_cust = %s and
+                    id_car = %s and
                     gov_number = %s and
-                    date_z = %s
+                    date_z = %s and
+                    finish_date_z = %s and
+                    vincode = %s and
+                    milleage = %s and
+                    enginecode = %s
                 """
 
-        self.cursor.execute(querry, (id_cust, car_number, date_z))
+        self.cursor.execute(querry, (id_cust, id_auto, car_number, duration,
+                            vincode, enginecode, milleage))
         self.connection.commit()
 
     def get_companies(self):

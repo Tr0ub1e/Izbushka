@@ -6,7 +6,9 @@ from connection_dialog import ConDial
 from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
 from add_auto_cust_dialog import AddAutoCust
+from order_status_dialog import Order_status
 from extended_QTreeItem import Ext_Item
+from extended_qtablewidgetitem import Ext_TableItem
 
 class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
@@ -72,6 +74,8 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.changeCust.clicked.connect(self.raise_change_cust)
 
             self.ui.addZakaz.clicked.connect(self.raise_add_auto)
+
+            self.ui.clientTable.cellDoubleClicked.connect(self.get_status_z)
 
             self.employees()
             self.clients()
@@ -175,21 +179,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def delete_cust_car(self):
 
-        if not self.ui.clientTree.currentItem().text(0) in \
-                                    [j for i in self.get_fam() for j in i]:
+        for i in self.ui.clientTable.selectedIndexes():
 
-            id_cust =  self.ui.clientTree.currentItem().id_item
-            gov_number = self.ui.clientTable.item(self.ui.\
-                            clientTable.currentRow(), 2).text()
-
-            mark = self.ui.clientTable.item(self.ui.\
-                            clientTable.currentRow(), 0).text()
-            model = self.ui.clientTable.item(self.ui.\
-                            clientTable.currentRow(), 1).text()
-
-            id_car = self.get_car(mark, model)
-
-            self.delete_auto(id_cust, *id_car, gov_number)
+            #self.delete
 
             self.clients_table()
 
@@ -294,11 +286,18 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             for _id, item in enumerate(self.get_client_cars(id_cust)):
 
                 self.ui.clientTable.setItem(_id, 0, \
-                                        QtWidgets.QTableWidgetItem(item[0]))
+                                        Ext_TableItem(item[0], item[3]))
                 self.ui.clientTable.setItem(_id, 1, \
                                         QtWidgets.QTableWidgetItem(item[1]))
                 self.ui.clientTable.setItem(_id, 2, \
                                         QtWidgets.QTableWidgetItem(item[2]))
+
+    def get_status_z(self):
+
+        id_cust = self.ui.clientTree.currentItem().id_item
+        id_z = self.ui.clientTable.item(self.ui.clientTable.currentRow(), 0).id_item
+
+        Order_status(self.connection, self.cursor, id_cust, id_z)
 
     def auxiliary(self):
 

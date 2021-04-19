@@ -269,11 +269,6 @@
         <string>Гос номер</string>
        </property>
       </column>
-      <column>
-       <property name="text">
-        <string>Статус</string>
-       </property>
-      </column>
      </widget>
      <widget class="QPushButton" name="addZakaz">
       <property name="geometry">
