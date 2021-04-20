@@ -71,7 +71,7 @@ class AddAutoCust(QtWidgets.QDialog):
             id_serv = self.dial_ui.ableUsluga.item(row, 0).id_item
             serv_cost = int(self.dial_ui.ableUsluga.item(row, 1).text())
 
-            dialog = Count_Orders(self.db.connection, self.db.cursor, mark, model, id_serv, serv_cost)
+            dialog = Count_Orders(self.db.connection, self.db.cursor, mark, model, id_serv)
             data, kol_vo, part_cost = dialog.data, dialog.value, dialog.part_cost
 
             for i in range(3):
@@ -182,11 +182,10 @@ class AddAutoCust(QtWidgets.QDialog):
 
             id_z = self.db.insert_zakaz(self.id_client, *id_auto, car_number,
                 self.duration, vincode, enginecode, milleage)
-            print(id_usluga)
 
             for id_serv, items, cost in id_usluga:
 
-                if len(items) == 1:
+                if isinstance(items[0], int):
                     for i in range(items[0]):
                         self.db.insert_uslugi_zakaz(*id_z, id_serv, cost)
 
@@ -199,7 +198,7 @@ class AddAutoCust(QtWidgets.QDialog):
         #        self.db.insert_zap_zakaz(*id_z, id_zap, kol_vo)
 
         except Exception as e:
-            print(e)
+            print(traceback.format_exc())
 
         finally:
             self.dial.close()

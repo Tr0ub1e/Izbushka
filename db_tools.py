@@ -91,10 +91,30 @@ class autowork_db(Employee_db, Customer_db):
 
         query = """
             select
-                name_serv, status_serv
+                name_serv, name_zap, status_serv
             FROM autowork.zakaz
                 join services_z using(id_z)
                 join services using(id_serv)
+                left join zapchasti_sklad on id_zap = id_zapch
+            where
+                id_cust = %s and
+                id_z = %s
+                """
+        self.cursor.execute(query, (id_cust, id_z))
+
+        return self.cursor.fetchall()
+
+    def get_more_serv_stat(self, id_cust, id_z):
+
+        query = """
+            select
+                company, model, gov_number, enginecode,
+                vincode, milleage, finish_date_z
+            FROM autowork.zakaz
+                join services_z using(id_z)
+                join services using(id_serv)
+                join car using(id_car)
+                left join zapchasti_sklad on id_zap = id_zapch
             where
                 id_cust = %s and
                 id_z = %s
@@ -133,7 +153,9 @@ class autowork_db(Employee_db, Customer_db):
                   """
 
         self.cursor.execute(car_pos, (id_cust, id_auto, car_number,
-                            time, finish_date, vincode, enginecode, milleage))
+                            time.strftime("%Y-%m-%d %H:%M:%S"),
+                            finish_date.strftime("%Y-%m-%d %H:%M:%S"),
+                            vincode, enginecode, milleage))
         self.connection.commit()
 
         return self.get_id_zakaz(id_cust, id_auto, car_number,

@@ -106,6 +106,7 @@ class Ui_Dialog(object):
         self.label_12.setFont(font)
         self.label_12.setObjectName("label_12")
         self.vincodeEdit = QtWidgets.QLineEdit(Dialog)
+        self.vincodeEdit.setMaxLength(17)
         self.vincodeEdit.setGeometry(QtCore.QRect(10, 160, 291, 22))
         self.vincodeEdit.setObjectName("vincodeEdit")
         self.label_13 = QtWidgets.QLabel(Dialog)

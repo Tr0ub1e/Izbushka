@@ -66,9 +66,9 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>290</x>
         <y>250</y>
-        <width>231</width>
+        <width>241</width>
         <height>211</height>
        </rect>
       </property>
@@ -128,9 +128,9 @@
      <widget class="QWidget" name="verticalLayoutWidget_4">
       <property name="geometry">
        <rect>
-        <x>550</x>
+        <x>540</x>
         <y>250</y>
-        <width>481</width>
+        <width>491</width>
         <height>211</height>
        </rect>
       </property>
@@ -215,9 +215,9 @@
      <widget class="QTableWidget" name="clientTable">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>290</x>
         <y>10</y>
-        <width>731</width>
+        <width>741</width>
         <height>221</height>
        </rect>
       </property>
@@ -320,7 +320,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>11</y>
+        <y>10</y>
         <width>270</width>
         <height>621</height>
        </rect>
@@ -418,7 +418,7 @@
        <string>Детали задания</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="getInfoUsluga">
+     <widget class="QPushButton" name="getInfoTask">
       <property name="geometry">
        <rect>
         <x>300</x>
@@ -440,9 +440,9 @@
       <property name="geometry">
        <rect>
         <x>290</x>
-        <y>300</y>
+        <y>290</y>
         <width>171</width>
-        <height>305</height>
+        <height>231</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -538,9 +538,9 @@
       <property name="geometry">
        <rect>
         <x>470</x>
-        <y>300</y>
+        <y>290</y>
         <width>561</width>
-        <height>301</height>
+        <height>231</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -634,8 +634,8 @@
      <widget class="QPushButton" name="addEmpl">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>610</y>
+        <x>880</x>
+        <y>530</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -647,8 +647,8 @@
      <widget class="QPushButton" name="changeEmpl">
       <property name="geometry">
        <rect>
-        <x>590</x>
-        <y>610</y>
+        <x>880</x>
+        <y>570</y>
         <width>131</width>
         <height>28</height>
        </rect>
@@ -663,7 +663,7 @@
         <x>10</x>
         <y>10</y>
         <width>271</width>
-        <height>631</height>
+        <height>621</height>
        </rect>
       </property>
       <property name="sortingEnabled">
@@ -727,6 +727,45 @@
        </property>
       </column>
      </widget>
+     <widget class="QPushButton" name="addSpec">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>530</y>
+        <width>161</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить специальность</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="changeSpec">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>570</y>
+        <width>161</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Изменить специальность</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="delSpec">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>610</y>
+        <width>161</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить специальность</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -750,9 +789,10 @@
     <property name="title">
      <string>Показать</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
-    <addaction name="action_3"/>
+    <addaction name="carsInService"/>
+    <addaction name="busyEmpl"/>
+    <addaction name="showSklad"/>
+    <addaction name="showUslugi"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -828,19 +868,24 @@
     <string>Автомобиль</string>
    </property>
   </action>
-  <action name="action">
+  <action name="carsInService">
    <property name="text">
     <string>Автомобили в сервисе</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="busyEmpl">
    <property name="text">
     <string>Занятых сотрудников</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="showSklad">
    <property name="text">
     <string>Запчасти на складе</string>
+   </property>
+  </action>
+  <action name="showUslugi">
+   <property name="text">
+    <string>Оказываемые услуги</string>
    </property>
   </action>
  </widget>

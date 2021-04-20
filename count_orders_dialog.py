@@ -7,7 +7,7 @@ from db_tools import autowork_db
 
 class Count_Orders(QtWidgets.QDialog):
 
-    def __init__(self, con, cursor, mark, model, id_serv, serv_cost):
+    def __init__(self, con, cursor, mark, model, id_serv):
         super(Count_Orders, self).__init__()
 
         self.dial = QtWidgets.QDialog()
@@ -26,7 +26,6 @@ class Count_Orders(QtWidgets.QDialog):
         self.part_cost = 0
 
         self.id_serv = id_serv
-        self.serv_cost = serv_cost
 
         self.dial_ui.pushButton.clicked.connect(self.get_number)
         self.dial_ui.addZapch.clicked.connect(self.add_parts)
@@ -69,7 +68,7 @@ class Count_Orders(QtWidgets.QDialog):
             return
 
         if self.dial_ui.checkBox.isChecked():
-            self.data.append(self.value) 
+            self.data.append(self.value)
             self.dial.close()
 
         for i in range(self.dial_ui.chosedParts.rowCount()):
@@ -112,6 +111,7 @@ class Count_Orders(QtWidgets.QDialog):
 
         try:
             row = self.dial_ui.ableParts.currentRow()
+            kol_vo = int(self.dial_ui.chosedParts.item(row, 1).text())
             self.part_value -= kol_vo
             self.count_part_cost(row, False)
 
