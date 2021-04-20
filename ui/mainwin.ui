@@ -304,15 +304,40 @@
      <widget class="QTreeWidget" name="specTable">
       <property name="geometry">
        <rect>
-        <x>299</x>
+        <x>289</x>
         <y>10</y>
-        <width>731</width>
+        <width>741</width>
         <height>481</height>
        </rect>
       </property>
       <column>
        <property name="text">
-        <string notr="true">Расписание</string>
+        <string notr="true">Дата</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Время</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Номер авто</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Марка и модель</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Работник</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Запчасть</string>
        </property>
       </column>
      </widget>

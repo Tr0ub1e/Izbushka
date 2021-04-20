@@ -3,8 +3,9 @@ from PyQt5.QtCore import QDate, Qt
 import datetime
 from db_tools_empl import Employee_db
 from db_tools_cust import Customer_db
+from db_tools_spec import Spec_db
 
-class autowork_db(Employee_db, Customer_db):
+class autowork_db(Employee_db, Customer_db, Spec_db):
 
     host = 'localhost'
     __database = 'autowork'
@@ -29,6 +30,50 @@ class autowork_db(Employee_db, Customer_db):
     def close_db(self):
         self.connection.close()
 
+    def insert_timetable(self, work_date):
+
+        q = "insert into timetable_date(work_date) values(%s)"
+
+        try:
+            self.cursor.execute(q, (work_date,))
+            self.connection.commit()
+        except:
+            return "date already exists"
+
+    def insert_time(self, id_date, work_time, id_z):
+
+        q = "insert into timetable_date_datetime(id_date, )"
+
+    def get_timetable(self):
+
+        q = "select * from timetable_date"
+
+        self.cursor.execute(q)
+        return self.cursor.fetchall()
+
+    def get_working_ours(self):
+
+        q = "select * from timetable_time"
+
+        self.cursor.execute(q)
+        return self.cursor.fetchall()
+
+    def get_timetable_data(self, id_date, id_time):
+
+        q = """select company, model, gov_number, fio, name_zap from timetable_date
+                    join shedule_ using(id_date)
+                    join timetable_time using(id_time)
+                    join zakaz using(id_z)
+                    join car using(id_car)
+                    join employees using(id_empl)
+                    join zapchasti_sklad using(id_zap)
+            where
+                id_time = %s and
+                id_date = %s
+            """
+        self.cursor.execute(q, (id_time, id_date))
+        return self.cursor.fetchall()
+
     def get_zapchasti_car(self, id_car):
 
         q = "select * from zapchasti_sklad where id_car = %s"
@@ -52,14 +97,14 @@ class autowork_db(Employee_db, Customer_db):
         self.cursor.execute(q, (id_serv,))
         return self.cursor.fetchall()
 
-    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, id_zapch=None):
+    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, id_zap=None):
 
         q = """
-            insert into services_z(id_z, id_serv, cost_serv, id_zapch)
+            insert into services_z(id_z, id_serv, cost_serv, id_zap)
             values (%s, %s, %s, %s)
             """
 
-        self.cursor.execute(q, (id_z, id_serv, cost_serv, id_zapch))
+        self.cursor.execute(q, (id_z, id_serv, cost_serv, id_zap))
         self.connection.commit()
 
     def insert_zap_zakaz(self, id_z, id_zap, kol_vo):
@@ -95,7 +140,7 @@ class autowork_db(Employee_db, Customer_db):
             FROM autowork.zakaz
                 join services_z using(id_z)
                 join services using(id_serv)
-                left join zapchasti_sklad on id_zap = id_zapch
+                left join zapchasti_sklad using(id_zap)
             where
                 id_cust = %s and
                 id_z = %s
@@ -114,7 +159,7 @@ class autowork_db(Employee_db, Customer_db):
                 join services_z using(id_z)
                 join services using(id_serv)
                 join car using(id_car)
-                left join zapchasti_sklad on id_zap = id_zapch
+                left join zapchasti_sklad using(id_zap)
             where
                 id_cust = %s and
                 id_z = %s
@@ -215,33 +260,5 @@ class autowork_db(Employee_db, Customer_db):
                  select model from autowork.car where company = %s
                  """
         self.cursor.execute(querry, (company,))
-
-        return self.cursor.fetchall()
-
-    def show_spec(self):
-
-        querry = 'select * from specialization'
-        self.cursor.execute(querry)
-
-        return self.cursor.fetchall()
-
-    def get_id_spec(self, spec):
-
-        querry = "select id_spec from specialization where name_spec = %s"
-
-        self.cursor.execute(querry, (spec,))
-        return self.cursor.fetchone()
-
-    def emp_pos(self, name_spec):
-
-        query = """
-                select fio, id_empl FROM autowork.employees join emp_pos
-                on id_empl = id_worker
-                join specialization
-                on id_pos = id_spec
-                where name_spec = %s
-                """
-
-        self.cursor.execute(query, (name_spec,))
 
         return self.cursor.fetchall()

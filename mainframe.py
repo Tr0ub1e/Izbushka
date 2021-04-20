@@ -1,7 +1,9 @@
+import traceback
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
 from myform import Ui_MainWindow
 from db_tools import autowork_db
+from add_spec_dialog import Add_specialization
 from connection_dialog import ConDial
 from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
@@ -69,6 +71,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
             self.ui.delEmpl.clicked.connect(self.delete_empl)
 
+            self.ui.addSpec.clicked.connect(self.raise_add_spec)
+            self.ui.changeSpec.clicked.connect(self.raise_change_spec)
+            self.ui.delSpec.clicked.connect(self.delete_spec)
+
             self.ui.addCust.clicked.connect(self.raise_add_cust)
             self.ui.delCust.clicked.connect(self.delete_cust)
             self.ui.changeCust.clicked.connect(self.raise_change_cust)
@@ -80,10 +86,40 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.employees()
             self.clients()
             self.uslugi()
+            self.zakaz_tree()
 
         except Exception as e:
-            print(e)
+            print(traceback.format_exc())
             my_dial.error_msg()
+
+    def raise_add_spec(self):
+        Add_specialization(self.connection, self.cursor, 'insert')
+        self.ui.emplTree.clear()
+        self.employees()
+
+    def raise_change_spec(self):
+        old_name = self.ui.emplTree.currentItem().text(0)
+        self.ui.emplTree.clear()
+
+        Add_specialization(self.connection, self.cursor, 'update', old_name)
+
+        self.employees()
+
+    def delete_spec(self):
+        name = self.ui.emplTree.currentItem().text(0)
+
+        if self.ui.emplTree.currentItem().childCount() == 0:
+            self.ui.emplTree.clear()
+            self.del_spec(name)
+
+            self.employees()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка удаления")
+            msg.setInformativeText('Нельзя удалять занятые специальности')
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
 
     def raise_add_auto(self):
         """
@@ -226,10 +262,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             parent.setFlags(parent.flags())
             parent.setText(0, name_serv)
 
-            for id_z, _, _, _, _, status in self.get_pending_uslugi(id_serv):
+            for id_z, _, _, _, status in self.get_pending_uslugi(id_serv):
 
                 child = Ext_Item(parent, id_z)
-                child.setText(0, "Заказ №{}".format(id_z))
+                child.setText(0, "Заказ №{} \n({})".format(id_z, status))
 
     def clear_table(self):
         """
@@ -266,6 +302,30 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             self.ui.dateLab.setText(str(rental_date))
             self.ui.rateLab.setText(str(rate))
             self.ui.phoneLab.setText(phone)
+
+    def zakaz_tree(self):
+
+        for id_date, date_ in self.get_timetable():
+            parent = QtWidgets.QTreeWidgetItem(self.ui.specTable)
+            parent.setFlags(parent.flags())
+            parent.setText(0, date_.strftime("%d.%m.%Y"))
+
+            for id_time, time_ in self.get_working_ours():
+                child = QtWidgets.QTreeWidgetItem(parent)
+                child.setFlags(child.flags())
+                child.setText(1, str(time_))
+
+                for i in self.get_timetable_data(id_date, id_time):
+
+                    if isinstance(i, tuple):
+                        mark, model, gov_number, fio, name_zap = i
+                        new_child = QtWidgets.QTreeWidgetItem(child)
+                        new_child.setFlags(new_child.flags())
+
+                        new_child.setText(2, gov_number)
+                        new_child.setText(3, mark + ' ' + model)
+                        new_child.setText(4, str(fio))
+                        new_child.setText(5, str(name_zap))
 
     def clients_table(self):
 
@@ -313,3 +373,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.addCust.disconnect()
         self.ui.changeCust.disconnect()
         self.ui.delCust.disconnect()
+
+        self.ui.addSpec.disconnect()
+        self.ui.changeSpec.disconnect()
+        self.ui.delSpec.disconnect()
+
+        self.ui.addZakaz.disconnect()
