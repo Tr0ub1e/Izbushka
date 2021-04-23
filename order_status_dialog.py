@@ -15,11 +15,28 @@ class Order_status(QtWidgets.QDialog):
         self.db.connection = con
         self.db.cursor = cur
 
+        self.id_z = id_z
+
         self.dial_ui.setupUi(self.dial)
         self.dial_ui.retranslateUi(self.dial)
 
+        self.dial_ui.delZakaz.clicked.connect(self.delete_zakaz_action)
+
         self.fill_data(id_cust, id_z)
         self.dial.exec_()
+
+    def delete_zakaz_action(self):
+
+        msg = QtWidgets.QMessageBox()
+        resp = msg.question(self.dial, "Удаление заказа", \
+                        "Вы уверены что хотите удалить заказ? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+            self.db.delete_zakaz(self.id_z)
+            self.dial.close()
+        else:
+            return
+
 
     def fill_data(self, id_cust, id_z):
 

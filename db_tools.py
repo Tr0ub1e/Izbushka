@@ -4,8 +4,9 @@ import datetime
 from db_tools_empl import Employee_db
 from db_tools_cust import Customer_db
 from db_tools_spec import Spec_db
+from db_tools_timetable import Time_db
 
-class autowork_db(Employee_db, Customer_db, Spec_db):
+class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
 
     host = 'localhost'
     __database = 'autowork'
@@ -30,50 +31,6 @@ class autowork_db(Employee_db, Customer_db, Spec_db):
     def close_db(self):
         self.connection.close()
 
-    def insert_timetable(self, work_date):
-
-        q = "insert into timetable_date(work_date) values(%s)"
-
-        try:
-            self.cursor.execute(q, (work_date,))
-            self.connection.commit()
-        except:
-            return "date already exists"
-
-    def insert_time(self, id_date, work_time, id_z):
-
-        q = "insert into timetable_date_datetime(id_date, )"
-
-    def get_timetable(self):
-
-        q = "select * from timetable_date"
-
-        self.cursor.execute(q)
-        return self.cursor.fetchall()
-
-    def get_working_ours(self):
-
-        q = "select * from timetable_time"
-
-        self.cursor.execute(q)
-        return self.cursor.fetchall()
-
-    def get_timetable_data(self, id_date, id_time):
-
-        q = """select company, model, gov_number, fio, name_zap from timetable_date
-                    join shedule_ using(id_date)
-                    join timetable_time using(id_time)
-                    join zakaz using(id_z)
-                    join car using(id_car)
-                    join employees using(id_empl)
-                    join zapchasti_sklad using(id_zap)
-            where
-                id_time = %s and
-                id_date = %s
-            """
-        self.cursor.execute(q, (id_time, id_date))
-        return self.cursor.fetchall()
-
     def get_zapchasti_car(self, id_car):
 
         q = "select * from zapchasti_sklad where id_car = %s"
@@ -91,31 +48,90 @@ class autowork_db(Employee_db, Customer_db, Spec_db):
         return self.cursor.fetchall()
 
     def get_pending_uslugi(self, id_serv):
+        q = """
+               select
+	               id_services_z, name_zap, finish_date_z, duration, id_zap
+               from
+	              services
+                    join services_z using(id_serv)
+                    join zakaz using(id_z)
+                    left join zapchasti_sklad using(id_zap)
+                where
+                    status_serv = 'ожидание' and id_serv = %s
+            """
+        self.cursor.execute(q, (id_serv,))
+        return self.cursor.fetchall()
+
+    def get_pending_zakaz(self, id_serv):
 
         q = "select * from services_z where id_serv = %s"
 
         self.cursor.execute(q, (id_serv,))
         return self.cursor.fetchall()
 
-    def insert_uslugi_zakaz(self, id_z, id_serv, cost_serv, id_zap=None):
+    def insert_uslugi_zakaz(self, id_z, id_serv, id_zap=None):
 
         q = """
-            insert into services_z(id_z, id_serv, cost_serv, id_zap)
-            values (%s, %s, %s, %s)
-            """
-
-        self.cursor.execute(q, (id_z, id_serv, cost_serv, id_zap))
-        self.connection.commit()
-
-    def insert_zap_zakaz(self, id_z, id_zap, kol_vo):
-
-        q = """
-            insert into zap_z(id_z, id_zap, kol_vo)
+            insert into services_z(id_z, id_serv, id_zap)
             values (%s, %s, %s)
             """
 
-        self.cursor.execute(q, (id_z, id_zap, kol_vo))
+        self.cursor.execute(q, (id_z, id_serv, id_zap))
         self.connection.commit()
+
+    def delete_task(self, id_shedule):
+
+        q = "select id_serv_z from shedule_ where id_shedule = %s"
+        self.cursor.execute(q, (id_shedule,))
+        res = self.cursor.fetchone()
+
+        q = "delete from shedule_ where id_shedule = %s"
+        self.cursor.execute(q, (id_shedule,))
+        self.connection.commit()
+
+        q = "update(services_z) set status_serv = 'ожидание' \
+                where id_services_z = %s"
+        self.cursor.execute(q, res)
+        self.connection.commit()
+
+    def delete_zakaz(self, id_z):
+        q = "delete from zakaz where id_z = %s"
+        self.cursor.execute(q, (id_z,))
+        self.connection.commit()
+
+    def insert_shedule(self, id_date, id_time, id_serv_z, id_empl):
+
+        q = """
+            insert into
+                shedule_(id_date, id_time, id_serv_z, id_empl)
+            values(
+                %s, %s, %s, %s
+            )
+            """
+        self.cursor.execute(q, (id_date, id_time, id_serv_z, id_empl))
+        self.connection.commit()
+
+        q = """
+            update(services_z)
+            set status_serv = 'выполняется'
+            where id_services_z = %s
+            """
+
+        self.cursor.execute(q, (id_serv_z,))
+        self.connection.commit()
+
+    def get_id_shedule(self, id_date, id_time, id_serv_z, id_empl):
+
+        id_shedule = """
+            select id_shedule from shedule_
+            where
+                id_date = %s and id_time = %s
+                and id_serv_z = %s and id_empl = %s
+            """
+
+        self.cursor.execute(q, (id_date, id_time, id_serv_z, id_empl))
+
+        return self.cursor.fetchall()
 
     def get_client_cars(self, id_cust):
 
@@ -225,25 +241,11 @@ class autowork_db(Employee_db, Customer_db, Spec_db):
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()
 
-    def delete_auto(self, id_cust, id_auto, car_number, duration,
-                        vincode, enginecode, milleage):
+    def show_shedule(self):
 
-        querry = """
-                delete from autowork.zakaz
-                where
-                    id_cust = %s and
-                    id_car = %s and
-                    gov_number = %s and
-                    date_z = %s and
-                    finish_date_z = %s and
-                    vincode = %s and
-                    milleage = %s and
-                    enginecode = %s
-                """
-
-        self.cursor.execute(querry, (id_cust, id_auto, car_number, duration,
-                            vincode, enginecode, milleage))
-        self.connection.commit()
+        q = 'select * from shedule_'
+        self.cursor.execute(q)
+        return self.cursor.fetchall()
 
     def get_companies(self):
 

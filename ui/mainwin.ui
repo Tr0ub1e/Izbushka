@@ -337,7 +337,7 @@
       </column>
       <column>
        <property name="text">
-        <string>Запчасть</string>
+        <string>Код расписания</string>
        </property>
       </column>
      </widget>

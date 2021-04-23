@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(955, 293)
+        Dialog.resize(1120, 336)
         self.label_13 = QtWidgets.QLabel(Dialog)
         self.label_13.setGeometry(QtCore.QRect(20, 80, 121, 16))
         font = QtGui.QFont()
@@ -86,7 +86,7 @@ class Ui_Dialog(object):
         self.modelEdit.setReadOnly(True)
         self.modelEdit.setObjectName("modelEdit")
         self.chosedUsluga = QtWidgets.QTableWidget(Dialog)
-        self.chosedUsluga.setGeometry(QtCore.QRect(370, 10, 571, 271))
+        self.chosedUsluga.setGeometry(QtCore.QRect(370, 10, 741, 311))
         self.chosedUsluga.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.chosedUsluga.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.chosedUsluga.setObjectName("chosedUsluga")
@@ -109,14 +109,21 @@ class Ui_Dialog(object):
         self.label_3.setObjectName("label_3")
         self.dateTimeEdit = QtWidgets.QDateTimeEdit(Dialog)
         self.dateTimeEdit.setGeometry(QtCore.QRect(160, 260, 194, 22))
+        self.dateTimeEdit.setReadOnly(True)
         self.dateTimeEdit.setObjectName("dateTimeEdit")
+        self.delZakaz = QtWidgets.QPushButton(Dialog)
+        self.delZakaz.setGeometry(QtCore.QRect(120, 300, 93, 28))
+        self.delZakaz.setCheckable(False)
+        self.delZakaz.setDefault(False)
+        self.delZakaz.setFlat(False)
+        self.delZakaz.setObjectName("delZakaz")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Статус заказа"))
         self.label_13.setText(_translate("Dialog", "Пробег"))
         self.label.setText(_translate("Dialog", "Марка"))
         self.label_14.setText(_translate("Dialog", "Номер двигателя"))
@@ -125,9 +132,10 @@ class Ui_Dialog(object):
         self.numberEdit.setPlaceholderText(_translate("Dialog", "AA####AA"))
         self.label_12.setText(_translate("Dialog", "VIN код"))
         item = self.chosedUsluga.horizontalHeaderItem(0)
-        item.setText(_translate("Dialog", "Услуги"))
+        item.setText(_translate("Dialog", "Услуга"))
         item = self.chosedUsluga.horizontalHeaderItem(1)
         item.setText(_translate("Dialog", "Деталь"))
         item = self.chosedUsluga.horizontalHeaderItem(2)
         item.setText(_translate("Dialog", "Статус"))
         self.label_3.setText(_translate("Dialog", "Дата окончания"))
+        self.delZakaz.setText(_translate("Dialog", "Удалить заказ"))

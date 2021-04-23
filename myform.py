@@ -385,7 +385,7 @@ class Ui_MainWindow(object):
         self.specTable.headerItem().setText(2, _translate("MainWindow", "Номер авто"))
         self.specTable.headerItem().setText(3, _translate("MainWindow", "Марка и модель"))
         self.specTable.headerItem().setText(4, _translate("MainWindow", "Работник"))
-        self.specTable.headerItem().setText(5, _translate("MainWindow", "Запчасть"))
+        self.specTable.headerItem().setText(5, _translate("MainWindow", "Код расписания"))
         self.uslugiTree.setSortingEnabled(True)
         self.addUsluga.setText(_translate("MainWindow", "Добавить услугу"))
         self.delUsluga.setText(_translate("MainWindow", "Удалить услугу"))

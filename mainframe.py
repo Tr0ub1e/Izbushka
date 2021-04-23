@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtGui
 from myform import Ui_MainWindow
 from db_tools import autowork_db
 from add_spec_dialog import Add_specialization
+from add_task_dialog import Add_Task
 from connection_dialog import ConDial
 from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
@@ -81,6 +82,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
             self.ui.addZakaz.clicked.connect(self.raise_add_auto)
 
+            self.ui.addTimetable.clicked.connect(self.make_task)
+            self.ui.delTimetable.clicked.connect(self.delete_task_)
+
             self.ui.clientTable.cellDoubleClicked.connect(self.get_status_z)
 
             self.employees()
@@ -98,36 +102,70 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.employees()
 
     def raise_change_spec(self):
-        old_name = self.ui.emplTree.currentItem().text(0)
-        self.ui.emplTree.clear()
 
-        Add_specialization(self.connection, self.cursor, 'update', old_name)
+        try:
+            old_name = self.ui.emplTree.currentItem().text(0)
 
-        self.employees()
+            if old_name in [name_spec for _, name_spec in self.show_spec()]:
+                self.ui.emplTree.clear()
 
-    def delete_spec(self):
-        name = self.ui.emplTree.currentItem().text(0)
-
-        if self.ui.emplTree.currentItem().childCount() == 0:
-            self.ui.emplTree.clear()
-            self.del_spec(name)
-
-            self.employees()
-        else:
+                Add_specialization(self.connection, self.cursor, 'update', old_name)
+                self.employees()
+        except:
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Critical)
-            msg.setText("Ошибка удаления")
-            msg.setInformativeText('Нельзя удалять занятые специальности')
+            msg.setText("Ошибка изменения")
+            msg.setInformativeText('Произошел сбой в изменении данных')
             msg.setWindowTitle("Ошибка")
             msg.exec_()
+
+    def delete_spec(self):
+
+        try:
+            name = self.ui.emplTree.currentItem().text(0)
+
+            if self.ui.emplTree.currentItem().childCount() == 0:
+                self.ui.emplTree.clear()
+                self.del_spec(name)
+
+                self.employees()
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Ошибка удаления")
+                msg.setInformativeText('Нельзя удалять занятые специальности')
+                msg.setWindowTitle("Ошибка")
+                msg.exec_()
+
+        except:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Ошибка удаления")
+                msg.setInformativeText('Произошел сбой в удалении данных')
+                msg.setWindowTitle("Ошибка")
+                msg.exec_()
 
     def raise_add_auto(self):
         """
         """
-        fio = self.ui.clientTree.currentItem().text(0)
-        id_client = self.ui.clientTree.currentItem().id_item
+        try:
+            fio = self.ui.clientTree.currentItem().text(0)
+            id_client = self.ui.clientTree.currentItem().id_item
 
-        my_dial = AddAutoCust(self.connection, self.cursor, id_client, fio)
+            my_dial = AddAutoCust(self.connection, self.cursor, id_client, fio)
+
+            self.ui.clientTable.setRowCount(0)
+            self.clients_table()
+            self.uslugi()
+
+        except:
+            print(traceback.format_exc())
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка добавления")
+            msg.setInformativeText('Вы не выбрали клиента')
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
 
     def raise_add_emp(self):
         """
@@ -141,21 +179,34 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def raise_change_empl(self):
 
-        id_empl = self.ui.emplTree.currentItem().id_item
-        fio = self.ui.fioLab.text().split(' ')
-        spec = self.ui.specLab.text()
-        date_ = datetime.strptime(self.ui.dateLab.text(), '%Y-%m-%d').date()
-        phone = self.ui.phoneLab.text()
-        rate = self.ui.rateLab.text()
+        try:
 
-        _ = (id_empl, *fio, date_, rate, phone, spec)
+            if self.ui.emplTree.currentItem().text(0) \
+                    in [name_spec for _, name_spec in self.show_spec()]:
 
-        my_dial = EmpDial(self.show_spec(), self.connection, self.cursor,
-                "update", _)
+                id_empl = self.ui.emplTree.currentItem().id_item
+                fio = self.ui.fioLab.text().split(' ')
+                spec = self.ui.specLab.text()
+                date_ = datetime.strptime(self.ui.dateLab.text(), '%Y-%m-%d').date()
+                phone = self.ui.phoneLab.text()
+                rate = self.ui.rateLab.text()
 
-        self.ui.emplTree.clear()
-        self.clear_labels()
-        self.employees()
+                _ = (id_empl, *fio, date_, rate, phone, spec)
+
+                my_dial = EmpDial(self.show_spec(), self.connection, self.cursor,
+                        "update", _)
+
+                self.ui.emplTree.clear()
+                self.clear_labels()
+                self.employees()
+
+        except:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка изменения")
+            msg.setInformativeText('Произошел сбой в изменении данных')
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
 
     def raise_add_cust(self):
         """
@@ -167,22 +218,30 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def raise_change_cust(self):
 
-        fio = self.ui.fioCli.text()
-        phone = self.ui.phoneCli.text()
-        id_cust = self.ui.clientTree.currentItem().id_item
+        try:
+            fio = self.ui.fioCli.text()
+            phone = self.ui.phoneCli.text()
+            id_cust = self.ui.clientTree.currentItem().id_item
 
-        up_st = (id_cust, fio, phone)
+            up_st = (id_cust, fio, phone)
 
-        my_dial = CustDial(self.connection, self.cursor, "update", up_st)
-        self.ui.clientTree.clear()
-        self.clients()
+            my_dial = CustDial(self.connection, self.cursor, "update", up_st)
+            self.ui.clientTree.clear()
+            self.clients()
+        except:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка изменения")
+            msg.setInformativeText('Произошел сбой в изменении данных')
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
 
     def delete_empl(self):
 
-        id_empl = self.ui.emplTree.currentItem().id_item
         msg = QtWidgets.QMessageBox()
 
         try:
+            id_empl = self.ui.emplTree.currentItem().id_item
             self.delete_empl_by_id(id_empl)
 
             msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -206,20 +265,22 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         if not self.ui.clientTree.currentItem().text(0) in \
                                     [j for i in self.get_fam() for j in i]:
 
+            if self.ui.clientTable.rowCount() != 0:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Ошибка удаления")
+                msg.setInformativeText('Нельзя удалять клиента с активными заказами')
+                msg.setWindowTitle("Ошибка")
+                msg.exec_()
+
+                return
+
             id_cust = self.ui.clientTree.currentItem().id_item
             self.delete_customer(id_cust)
 
             self.ui.clientTree.clear()
             self.clear_table()
             self.clients()
-
-    def delete_cust_car(self):
-
-        for i in self.ui.clientTable.selectedIndexes():
-
-            #self.delete
-
-            self.clients_table()
 
     def clients(self):
         """
@@ -255,6 +316,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.emplTree.itemSelectionChanged.connect(self.empl_tree_items)
 
     def uslugi(self):
+        self.ui.uslugiTree.clear()
 
         for id_serv, name_serv, _, _ in self.get_uslugi():
 
@@ -262,10 +324,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             parent.setFlags(parent.flags())
             parent.setText(0, name_serv)
 
-            for id_z, _, _, _, status in self.get_pending_uslugi(id_serv):
+            for id_serv_z, _, _, _, status in self.get_pending_zakaz(id_serv):
 
-                child = Ext_Item(parent, id_z)
-                child.setText(0, "Заказ №{} \n({})".format(id_z, status))
+                child = Ext_Item(parent, (id_serv_z))
+                child.setText(0, "Задание №{} \n({})".format(id_serv_z, status))
 
     def clear_table(self):
         """
@@ -285,25 +347,30 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def empl_tree_items(self):
 
-        if not self.ui.emplTree.currentItem().text(0) in \
+        try:
+            if not self.ui.emplTree.currentItem().text(0) in \
                                         [x for _, x in self.show_spec()]:
 
-            fio = self.ui.emplTree.currentItem().text(0)
-            id_empl = self.ui.emplTree.currentItem().id_item
+                fio = self.ui.emplTree.currentItem().text(0)
+                id_empl = self.ui.emplTree.currentItem().id_item
 
-            self.ui.fioLab.setText(fio)
+                self.ui.fioLab.setText(fio)
 
-            self.ui.specLab.setText(self.ui.emplTree. \
+                self.ui.specLab.setText(self.ui.emplTree. \
                             currentItem().parent().text(0))
 
-            if self.get_empl(id_empl) == []: return
-            _, _, rental_date, rate, phone = tuple(self.get_empl(id_empl)[0])
+                if self.get_empl(id_empl) == []: return
+                _, _, rental_date, rate, phone = tuple(self.get_empl(id_empl)[0])
 
-            self.ui.dateLab.setText(str(rental_date))
-            self.ui.rateLab.setText(str(rate))
-            self.ui.phoneLab.setText(phone)
+                self.ui.dateLab.setText(str(rental_date))
+                self.ui.rateLab.setText(str(rate))
+                self.ui.phoneLab.setText(phone)
+        except:
+            pass
 
     def zakaz_tree(self):
+        self.ui.specTable.clear()
+        self.clean_timetable()
 
         for id_date, date_ in self.get_timetable():
             parent = QtWidgets.QTreeWidgetItem(self.ui.specTable)
@@ -318,14 +385,52 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                 for i in self.get_timetable_data(id_date, id_time):
 
                     if isinstance(i, tuple):
-                        mark, model, gov_number, fio, name_zap = i
+                        id_shedule, mark, model, gov_number, fio, name_zap = i
                         new_child = QtWidgets.QTreeWidgetItem(child)
                         new_child.setFlags(new_child.flags())
 
                         new_child.setText(2, gov_number)
                         new_child.setText(3, mark + ' ' + model)
                         new_child.setText(4, str(fio))
-                        new_child.setText(5, str(name_zap))
+                        new_child.setText(5, str(id_shedule))
+
+    def empl_tasks(self):
+        pass
+
+    def make_task(self):
+
+
+        dialog = Add_Task(self.connection, self.cursor)
+        self.uslugi()
+        self.zakaz_tree()
+
+    def delete_task_(self):
+
+        msg = QtWidgets.QMessageBox()
+
+        resp = msg.question(self.win, "Удаление задания", \
+                        "Вы уверены что хотите удалить задание? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+
+            try:
+                id_shedule = int(self.ui.specTable.currentItem().text(5))
+                self.delete_task(id_shedule)
+
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText("Удаление выполнено успешно!")
+                msg.setWindowTitle("Удаление")
+
+                self.zakaz_tree()
+
+            except:
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Ошибка удаления")
+                msg.setInformativeText('Произошел сбой в удалении данных')
+                msg.setWindowTitle("Ошибка")
+
+            finally:
+                msg.exec_()
 
     def clients_table(self):
 
@@ -354,10 +459,15 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def get_status_z(self):
 
-        id_cust = self.ui.clientTree.currentItem().id_item
-        id_z = self.ui.clientTable.item(self.ui.clientTable.currentRow(), 0).id_item
+        try:
+            id_cust = self.ui.clientTree.currentItem().id_item
+            id_z = self.ui.clientTable.item(self.ui.clientTable.currentRow(), 0).id_item
 
-        Order_status(self.connection, self.cursor, id_cust, id_z)
+            Order_status(self.connection, self.cursor, id_cust, id_z)
+            self.clear_table()
+            self.clients_table()
+        except:
+            pass
 
     def auxiliary(self):
 
