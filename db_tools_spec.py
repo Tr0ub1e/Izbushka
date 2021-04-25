@@ -32,10 +32,13 @@ class Spec_db():
         self.cursor.execute(q, (new_name, old_name))
         self.connection.commit()
 
-    def del_spec(self, name_spec):
+    def del_spec(self, id_spec):
 
-        q = "delete from specialization where name_spec = %s"
-        self.cursor.execute(q, (name_spec,))
+        q = ("insert into arch_specialization select * from specialization where id_spec = %s",
+             "delete from specialization where id_spec = %s")
+
+        for i in q:
+            self.cursor.execute(i, (id_spec,))
         self.connection.commit()
 
     def emp_pos(self, name_spec):

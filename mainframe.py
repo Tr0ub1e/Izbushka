@@ -103,30 +103,42 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
+    @ds.update_windows
     def delete_spec(self):
 
-        try:
-            name = self.ui.emplTree.currentItem().text(0)
+        msg = QtWidgets.QMessageBox()
 
-            if self.ui.emplTree.currentItem().childCount() == 0:
-                self.ui.emplTree.clear()
-                self.del_spec(name)
+        resp = msg.question(self.win, "Удаление специальности", \
+                        "Вы уверены что хотите удалить специальность? ", msg.Yes|msg.No)
 
-                self.employees()
-            else:
-                msg = QtWidgets.QMessageBox()
-                msg.setIcon(QtWidgets.QMessageBox.Critical)
-                msg.setText("Ошибка удаления")
-                msg.setInformativeText('Нельзя удалять занятые специальности')
-                msg.setWindowTitle("Ошибка")
-                msg.exec_()
+        if resp == msg.Yes:
 
-        except:
+            try:
+                id_spec = self.ui.emplTree.currentItem().id_item
+
+                if self.ui.emplTree.currentItem().childCount() == 0:
+                    self.del_spec(id_spec)
+
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setText("Удаление выполнено успешно!")
+                    msg.setWindowTitle("Удаление")
+
+                else:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("Ошибка удаления")
+                    msg.setInformativeText('Нельзя удалять занятые специальности')
+                    msg.setWindowTitle("Ошибка")
+
+            except:
+                print(traceback.format_exc())
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Critical)
                 msg.setText("Ошибка удаления")
                 msg.setInformativeText('Произошел сбой в удалении данных')
                 msg.setWindowTitle("Ошибка")
+
+            finally:
                 msg.exec_()
 
     def raise_add_auto(self):
@@ -220,51 +232,75 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
+    @ds.update_windows
     def delete_empl(self):
 
         msg = QtWidgets.QMessageBox()
 
-        try:
-            id_empl = self.ui.emplTree.currentItem().id_item
-            self.delete_empl_by_id(id_empl)
+        resp = msg.question(self.win, "Удаление сотрудника", \
+                        "Вы уверены что хотите удалить сотрудника? ", msg.Yes|msg.No)
 
-            msg.setIcon(QtWidgets.QMessageBox.Information)
-            msg.setText("Удаление выполнено успешно!")
-            msg.setWindowTitle("Удаление")
+        if resp == msg.Yes:
 
-            self.ui.emplTree.clear()
-            self.employees()
+            try:
+                id_empl = self.ui.emplTree.currentItem().id_item
 
-        except:
-            msg.setIcon(QtWidgets.QMessageBox.Critical)
-            msg.setText("Ошибка удаления")
-            msg.setInformativeText('Произошел сбой в удалении данных')
-            msg.setWindowTitle("Ошибка")
+                if self.ui.tasksTable.rowCount() != 0:
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("Ошибка удаления")
+                    msg.setInformativeText('Нельзя удалять работников с заданиями')
+                    msg.setWindowTitle("Ошибка")
 
-        finally:
-            msg.exec_()
+                    return
 
-    def delete_cust(self):
+                self.delete_empl_by_id(id_empl)
 
-        if not self.ui.clientTree.currentItem().text(0) in \
-                                    [j for i in self.get_fam() for j in i]:
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText("Удаление выполнено успешно!")
+                msg.setWindowTitle("Удаление")
 
-            if self.ui.clientTable.rowCount() != 0:
-                msg = QtWidgets.QMessageBox()
+            except:
                 msg.setIcon(QtWidgets.QMessageBox.Critical)
                 msg.setText("Ошибка удаления")
-                msg.setInformativeText('Нельзя удалять клиента с активными заказами')
+                msg.setInformativeText('Произошел сбой в удалении данных')
                 msg.setWindowTitle("Ошибка")
+
+            finally:
                 msg.exec_()
 
-                return
+    @ds.update_windows
+    def delete_cust(self):
 
-            id_cust = self.ui.clientTree.currentItem().id_item
-            self.delete_customer(id_cust)
+        msg = QtWidgets.QMessageBox()
 
-            self.ui.clientTree.clear()
-            self.clear_table()
-            self.clients()
+        resp = msg.question(self.win, "Удаление клиента", \
+                        "Вы уверены что хотите удалить клиента? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+
+            try:
+                if not self.ui.clientTree.currentItem().text(0) in \
+                                            [j for i in self.get_fam() for j in i]:
+
+                    if self.ui.clientTable.rowCount() != 0:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setIcon(QtWidgets.QMessageBox.Critical)
+                        msg.setText("Ошибка удаления")
+                        msg.setInformativeText('Нельзя удалять клиента с активными заказами')
+                        msg.setWindowTitle("Ошибка")
+                        msg.exec_()
+
+                        return
+
+                    id_cust = self.ui.clientTree.currentItem().id_item
+                    self.delete_customer(id_cust)
+
+                    msg.setIcon(QtWidgets.QMessageBox.Information)
+                    msg.setText("Удаление выполнено успешно!")
+                    msg.setWindowTitle("Удаление")
+
+            except:
+                pass
 
     def clients(self):
         """
@@ -288,12 +324,12 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         Вывод дерева специальностей и работников
         """
-        for name in self.show_spec():
-            parent = QtWidgets.QTreeWidgetItem(self.ui.emplTree)
+        for id_, name in self.show_spec():
+            parent = Ext_Item(self.ui.emplTree, id_)
             parent.setFlags(parent.flags())
-            parent.setText(0, name[1])
+            parent.setText(0, name)
 
-            for fio, id_empl in self.emp_pos(name[1]):
+            for fio, id_empl in self.emp_pos(name):
                 child = Ext_Item(parent, id_empl)
                 child.setText(0, "{}".format(fio))
 
