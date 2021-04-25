@@ -81,7 +81,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
 
     def delete_task(self, id_shedule):
 
-        q = "select id_serv_z from shedule_ where id_shedule = %s"
+        q = "select s.id_serv_z from shedule_ as s where s.id_shedule = %s"
         self.cursor.execute(q, (id_shedule,))
         res = self.cursor.fetchone()
 
@@ -94,9 +94,21 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         self.cursor.execute(q, res)
         self.connection.commit()
 
+    def finish_zakaz(self, id_cust, id_z):
+
+        q = 'call add_orders_c(%s)'
+        self.cursor.execute(q, (id_cust,))
+        self.delete_zakaz(id_z)
+
     def delete_zakaz(self, id_z):
-        q = "delete from zakaz where id_z = %s"
-        self.cursor.execute(q, (id_z,))
+        q = (
+            "insert into arch_zakaz select * from zakaz where id_z = %s",
+            "insert into arch_services_z select * from services_z where id_z = %s",
+            "delete from zakaz where id_z = %s"
+            )
+
+        for i in q:
+            self.cursor.execute(i, (id_z,))
         self.connection.commit()
 
     def insert_shedule(self, id_date, id_time, id_serv_z, id_empl):
@@ -240,12 +252,6 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
                  """
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()
-
-    def show_shedule(self):
-
-        q = 'select * from shedule_'
-        self.cursor.execute(q)
-        return self.cursor.fetchall()
 
     def get_companies(self):
 

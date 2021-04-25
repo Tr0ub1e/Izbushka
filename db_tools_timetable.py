@@ -39,6 +39,12 @@ class Time_db():
         self.cursor.execute(q)
         return self.cursor.fetchall()
 
+    def show_shedule(self):
+
+        q = 'select * from shedule_'
+        self.cursor.execute(q)
+        return self.cursor.fetchall()
+
     def get_timetable_data(self, id_date, id_time):
 
         q = """select id_shedule, company, model, gov_number, fio, name_zap from timetable_date
@@ -51,7 +57,7 @@ class Time_db():
                     left join zapchasti_sklad using(id_zap)
             where
                 id_time = %s and
-                id_date = %s
+                id_date = %s and status_serv != 'готово'
             """
         self.cursor.execute(q, (id_time, id_date))
         return self.cursor.fetchall()

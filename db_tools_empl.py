@@ -50,6 +50,21 @@ class Employee_db():
         self.cursor.execute(emp_pos, (id_empl,))
         self.connection.commit()
 
+    def get_empl_tasks(self, id_empl):
+
+        q = """
+            select
+                id_serv_z, company, model, gov_number, status_serv
+            from autowork.shedule_
+                join services_z on id_services_z = id_serv_z
+                join zakaz using(id_z)
+                join car using(id_car)
+            where
+                id_empl = %s
+            """
+        self.cursor.execute(q, (id_empl,))
+        return self.cursor.fetchall()
+
     def get_empl(self, id_empl):
 
         querry = """
@@ -59,6 +74,17 @@ class Employee_db():
 
         self.cursor.execute(querry, (id_empl,))
         return self.cursor.fetchall()
+
+    def finish_task(self, id_serv_z):
+
+        q = "update(services_z) set status_serv = 'готово' where id_services_z = %s"
+
+        self.cursor.execute(q, (id_serv_z,))
+        self.connection.commit()
+
+        q = "delete from shedule_ where id_serv_z = %s"
+        self.cursor.execute(q, (id_serv_z,))
+        self.connection.commit()
 
     def insert_employees(self, fio, rental_date, rate, spec, phone):
 

@@ -16,11 +16,13 @@ class Order_status(QtWidgets.QDialog):
         self.db.cursor = cur
 
         self.id_z = id_z
+        self.id_cust = id_cust
 
         self.dial_ui.setupUi(self.dial)
         self.dial_ui.retranslateUi(self.dial)
 
         self.dial_ui.delZakaz.clicked.connect(self.delete_zakaz_action)
+        self.dial_ui.finishZak.clicked.connect(self.finish_zakaz_action)
 
         self.fill_data(id_cust, id_z)
         self.dial.exec_()
@@ -37,6 +39,22 @@ class Order_status(QtWidgets.QDialog):
         else:
             return
 
+    def finish_zakaz_action(self):
+
+        msg = QtWidgets.QMessageBox()
+        resp = msg.question(self.dial, "Завершение заказа", \
+                        "Вы уверены что хотите завершенить заказ? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+            for i in range(self.dial_ui.chosedUsluga.rowCount()):
+                if self.dial_ui.chosedUsluga.item(i, 2).text() != "готово":
+                    print(self.dial_ui.chosedUsluga.item(i, 2)).text()
+                    return
+
+            self.db.finish_zakaz(self.id_cust, self.id_z)
+            self.dial.close()
+        else:
+            return
 
     def fill_data(self, id_cust, id_z):
 

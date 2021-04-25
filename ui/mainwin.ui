@@ -283,19 +283,6 @@
        <string>Добавить заказ</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="delZakaz">
-      <property name="geometry">
-       <rect>
-        <x>690</x>
-        <y>570</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Удалить заказ</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -441,19 +428,6 @@
       </property>
       <property name="text">
        <string>Детали задания</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="getInfoTask">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>500</y>
-        <width>131</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Детали услуги</string>
       </property>
      </widget>
     </widget>
@@ -718,6 +692,15 @@
         <height>271</height>
        </rect>
       </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>false</bool>
       </attribute>
@@ -728,7 +711,7 @@
        <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
-       <bool>false</bool>
+       <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderCascadingSectionResizes">
        <bool>false</bool>

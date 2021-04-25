@@ -1,6 +1,7 @@
 import traceback
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui
+import decorators as ds
 from myform import Ui_MainWindow
 from db_tools import autowork_db
 from add_spec_dialog import Add_specialization
@@ -33,6 +34,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         self.win.show()
 
+    @ds.disconnect_
     def raise_discon_dialog(self):
         """
         Отключение от БД
@@ -45,8 +47,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         msg.setWindowTitle("Выход")
 
         try:
-            self.auxiliary()
-
             self.close_db()
             msg.exec_()
 
@@ -58,34 +58,18 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
+    @ds.connect_
     def raise_con_dialog(self):
         """
         Выводит диалог подключения к БД
         возвращает Подлючение и Курсор
         """
         try:
+            if self.connection != None: return
+
             my_dial = ConDial()
             self.connection, self.cursor = my_dial.mainDial()
             my_dial.access_msg()
-
-            self.ui.addEmpl.clicked.connect(self.raise_add_emp)
-            self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
-            self.ui.delEmpl.clicked.connect(self.delete_empl)
-
-            self.ui.addSpec.clicked.connect(self.raise_add_spec)
-            self.ui.changeSpec.clicked.connect(self.raise_change_spec)
-            self.ui.delSpec.clicked.connect(self.delete_spec)
-
-            self.ui.addCust.clicked.connect(self.raise_add_cust)
-            self.ui.delCust.clicked.connect(self.delete_cust)
-            self.ui.changeCust.clicked.connect(self.raise_change_cust)
-
-            self.ui.addZakaz.clicked.connect(self.raise_add_auto)
-
-            self.ui.addTimetable.clicked.connect(self.make_task)
-            self.ui.delTimetable.clicked.connect(self.delete_task_)
-
-            self.ui.clientTable.cellDoubleClicked.connect(self.get_status_z)
 
             self.employees()
             self.clients()
@@ -181,7 +165,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         try:
 
-            if self.ui.emplTree.currentItem().text(0) \
+            if not self.ui.emplTree.currentItem().text(0) \
                     in [name_spec for _, name_spec in self.show_spec()]:
 
                 id_empl = self.ui.emplTree.currentItem().id_item
@@ -334,6 +318,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         Очистка таблицы, удаление стобцов и колонок
         """
         self.ui.clientTable.setRowCount(0)
+        self.ui.tasksTable.setRowCount(0)
 
     def clear_labels(self):
 
@@ -345,11 +330,19 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         self.ui.specLab.setText(text)
         self.ui.rateLab.setText(text)
 
-    def empl_tree_items(self):
+        self.ui.phoneCli.setText(text)
+        self.ui.ordersCli.setText(text)
+        self.ui.fioCli.setText(text)
 
+    def empl_tree_items(self):
+        """
+        Выводит данные о работнике
+        """
         try:
             if not self.ui.emplTree.currentItem().text(0) in \
                                         [x for _, x in self.show_spec()]:
+
+                self.empl_tasks()
 
                 fio = self.ui.emplTree.currentItem().text(0)
                 id_empl = self.ui.emplTree.currentItem().id_item
@@ -395,10 +388,23 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                         new_child.setText(5, str(id_shedule))
 
     def empl_tasks(self):
-        pass
+
+        try:
+            id_empl = self.ui.emplTree.currentItem().id_item
+            self.ui.tasksTable.setRowCount(len(self.get_empl_tasks(id_empl)))
+
+            for i, items in enumerate(self.get_empl_tasks(id_empl)):
+
+                id_serv_z, *car, status_serv = items
+
+                self.ui.tasksTable.setItem(i, 0, QtWidgets.QTableWidgetItem("Задание №{}".format(id_serv_z)))
+                self.ui.tasksTable.setItem(i, 1, QtWidgets.QTableWidgetItem(' '.join(car)))
+                self.ui.tasksTable.setItem(i, 2, QtWidgets.QTableWidgetItem(status_serv))
+
+        except:
+            print(traceback.format_exc())
 
     def make_task(self):
-
 
         dialog = Add_Task(self.connection, self.cursor)
         self.uslugi()
@@ -434,29 +440,66 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
     def clients_table(self):
 
-        if not self.ui.clientTree.currentItem().text(0) in \
-                                    [j for i in self.get_fam() for j in i]:
+        try:
 
-            id_cust = self.ui.clientTree.currentItem().id_item
+            if not self.ui.clientTree.currentItem().text(0) in \
+                                        [j for i in self.get_fam() for j in i]:
 
-            if self.get_cust(id_cust) == None: return
-            fio, phone, orders = self.get_cust(id_cust)
+                id_cust = self.ui.clientTree.currentItem().id_item
 
-            self.ui.fioCli.setText(fio)
-            self.ui.phoneCli.setText(phone)
-            self.ui.ordersCli.setText(orders)
+                if self.get_cust(id_cust) == None: return
+                fio, phone, orders = self.get_cust(id_cust)
 
-            self.ui.clientTable.setRowCount(len(self.get_client_cars(id_cust)))
+                self.ui.fioCli.setText(fio)
+                self.ui.phoneCli.setText(phone)
+                self.ui.ordersCli.setText(str(orders))
 
-            for _id, item in enumerate(self.get_client_cars(id_cust)):
+                self.ui.clientTable.setRowCount(len(self.get_client_cars(id_cust)))
 
-                self.ui.clientTable.setItem(_id, 0, \
-                                        Ext_TableItem(item[0], item[3]))
-                self.ui.clientTable.setItem(_id, 1, \
-                                        QtWidgets.QTableWidgetItem(item[1]))
-                self.ui.clientTable.setItem(_id, 2, \
-                                        QtWidgets.QTableWidgetItem(item[2]))
+                for _id, item in enumerate(self.get_client_cars(id_cust)):
 
+                    self.ui.clientTable.setItem(_id, 0, \
+                                            Ext_TableItem(item[0], item[3]))
+                    self.ui.clientTable.setItem(_id, 1, \
+                                            QtWidgets.QTableWidgetItem(item[1]))
+                    self.ui.clientTable.setItem(_id, 2, \
+                                            QtWidgets.QTableWidgetItem(item[2]))
+        except:
+            pass
+
+    @ds.update_windows
+    def done_task_empl(self):
+
+        msg = QtWidgets.QMessageBox()
+
+        resp = msg.question(self.win, "Завершение задания", \
+                        "Вы уверены что хотите завершить задание? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+
+            try:
+                id_serv_z = self.ui.tasksTable.\
+                    item(self.ui.tasksTable.currentRow(), 0).text()[len('Задание №'):]
+
+                self.finish_task(int(id_serv_z))
+
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText("Завершение выполнено успешно!")
+                msg.setWindowTitle("Завершение")
+
+                self.zakaz_tree()
+
+            except:
+                print(traceback.format_exc())
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Ошибка удаления")
+                msg.setInformativeText('Произошел сбой в удалении данных')
+                msg.setWindowTitle("Ошибка")
+
+            finally:
+                msg.exec_()
+
+    @ds.update_windows
     def get_status_z(self):
 
         try:
@@ -464,28 +507,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             id_z = self.ui.clientTable.item(self.ui.clientTable.currentRow(), 0).id_item
 
             Order_status(self.connection, self.cursor, id_cust, id_z)
-            self.clear_table()
-            self.clients_table()
+
         except:
             pass
-
-    def auxiliary(self):
-
-        self.ui.emplTree.clear()
-        self.ui.clientTree.clear()
-        self.clear_table()
-        self.clear_labels()
-
-        self.ui.addEmpl.disconnect()
-        self.ui.changeEmpl.disconnect()
-        self.ui.delEmpl.disconnect()
-
-        self.ui.addCust.disconnect()
-        self.ui.changeCust.disconnect()
-        self.ui.delCust.disconnect()
-
-        self.ui.addSpec.disconnect()
-        self.ui.changeSpec.disconnect()
-        self.ui.delSpec.disconnect()
-
-        self.ui.addZakaz.disconnect()
