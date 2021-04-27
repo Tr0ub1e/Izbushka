@@ -169,6 +169,7 @@ class AddAutoCust(QtWidgets.QDialog):
             vincode = self.dial_ui.vincodeEdit.text()
             enginecode = self.dial_ui.engineEdit.text()
             milleage = self.dial_ui.milliageEdit.text()
+            cost = self.dial_ui.resultEdit.text()
 
             for i in range(self.dial_ui.chosedUsluga.rowCount()):
                 try:
@@ -180,7 +181,7 @@ class AddAutoCust(QtWidgets.QDialog):
 
 
             id_z = self.db.insert_zakaz(self.id_client, *id_auto, car_number,
-                self.duration, vincode, enginecode, milleage)
+                self.duration, vincode, enginecode, milleage, int(cost))
 
             for id_serv, items in id_usluga:
 

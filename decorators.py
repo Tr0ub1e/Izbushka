@@ -49,6 +49,10 @@ def disconnect_(func):
 
         self.ui.addZakaz.disconnect()
 
+        self.ui.showUslugi.disconnect()
+        self.ui.carsInService.disconnect()
+        self.ui.showSklad.disconnect()
+
         return func(self)
 
     return inner
@@ -77,6 +81,10 @@ def connect_(func):
 
         self.ui.clientTable.cellDoubleClicked.connect(self.get_status_z)
         self.ui.tasksTable.cellDoubleClicked.connect(self.done_task_empl)
+
+        self.ui.showUslugi.triggered.connect(self.raise_show_usluga)
+        self.ui.carsInService.triggered.connect(self.raise_show_cars)
+        self.ui.showSklad.triggered.connect(self.raise_show_parts)
 
         return func(self)
     return inner

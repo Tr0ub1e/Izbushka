@@ -11,6 +11,9 @@ from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
 from add_auto_cust_dialog import AddAutoCust
 from order_status_dialog import Order_status
+from cars_inside_dial import Cars
+from usluga_table_dialog import Usluga
+from show_parts_dialog import Parts
 from extended_QTreeItem import Ext_Item
 from extended_qtablewidgetitem import Ext_TableItem
 
@@ -79,6 +82,15 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         except Exception as e:
             print(traceback.format_exc())
             my_dial.error_msg()
+
+    def raise_show_parts(self):
+        Parts(self.connection, self.cursor)
+
+    def raise_show_cars(self):
+        Cars(self.connection, self.cursor)
+
+    def raise_show_usluga(self):
+        Usluga(self.connection, self.cursor)
 
     def raise_add_spec(self):
         Add_specialization(self.connection, self.cursor, 'insert')

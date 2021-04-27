@@ -47,6 +47,12 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
 
         return self.cursor.fetchall()
 
+    def get_zapchasti(self):
+        q = 'select * FROM autowork.zapchasti_sklad join car using(id_car)'
+        self.cursor.execute(q)
+        
+        return self.cursor.fetchall()
+
     def get_pending_uslugi(self, id_serv):
         q = """
                select
@@ -182,7 +188,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         query = """
             select
                 company, model, gov_number, enginecode,
-                vincode, milleage, finish_date_z
+                vincode, milleage, finish_date_z, sum_z
             FROM autowork.zakaz
                 join services_z using(id_z)
                 join services using(id_serv)
@@ -208,7 +214,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         return self.cursor.fetchone()
 
     def insert_zakaz(self, id_cust, id_auto, car_number, duration,
-                        vincode, enginecode, milleage):
+                        vincode, enginecode, milleage, sum_z):
 
         time = datetime.datetime.now()
 
@@ -221,20 +227,20 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         car_pos = """
                     insert into autowork.zakaz
                     (id_cust, id_car, gov_number, date_z, finish_date_z,
-                    vincode, enginecode, milleage)
-                    values (%s, %s, %s, %s, %s, %s, %s, %s);
+                    vincode, enginecode, milleage, sum_z)
+                    values (%s, %s, %s, %s, %s, %s, %s, %s, %s);
                   """
 
         self.cursor.execute(car_pos, (id_cust, id_auto, car_number,
                             time.strftime("%Y-%m-%d %H:%M:%S"),
                             finish_date.strftime("%Y-%m-%d %H:%M:%S"),
-                            vincode, enginecode, milleage))
+                            vincode, enginecode, milleage, sum_z))
         self.connection.commit()
 
         return self.get_id_zakaz(id_cust, id_auto, car_number,
                                 time.strftime("%Y-%m-%d %H:%M:%S"),
                                 finish_date.strftime("%Y-%m-%d %H:%M:%S"),
-                                vincode, milleage, enginecode)
+                                vincode, milleage, enginecode, sum_z)
 
     def get_id_zakaz(self, *args):
 
@@ -248,10 +254,20 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
                     z.finish_date_z = %s and
                     z.vincode = %s and
                     z.milleage = %s and
-                    z.enginecode = %s;
+                    z.enginecode = %s and
+                    z.sum_z = %s
                  """
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()
+
+    def get_cars(self):
+
+        q = 'select company, model, gov_number \
+                    FROM autowork.zakaz join car using(id_car)'
+
+        self.cursor.execute(q)
+
+        return self.cursor.fetchall()
 
     def get_companies(self):
 

@@ -48,7 +48,10 @@ class Order_status(QtWidgets.QDialog):
         if resp == msg.Yes:
             for i in range(self.dial_ui.chosedUsluga.rowCount()):
                 if self.dial_ui.chosedUsluga.item(i, 2).text() != "готово":
-                    print(self.dial_ui.chosedUsluga.item(i, 2)).text()
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setWindowTitle('Ошибка')
+                    msg.setText('Есть незавершенные задания')
+                    msg.exec_()
                     return
 
             self.db.finish_zakaz(self.id_cust, self.id_z)
@@ -58,7 +61,9 @@ class Order_status(QtWidgets.QDialog):
 
     def fill_data(self, id_cust, id_z):
 
-        company, model, gov_number, enginecode, vincode, milleage, finish_date_z = self.db.get_more_serv_stat(id_cust, id_z)[0]
+        company, model, gov_number, \
+        enginecode, vincode, milleage, \
+        finish_date_z, sum_z = self.db.get_more_serv_stat(id_cust, id_z)[0]
 
         self.dial_ui.milliageEdit.setText(str(milleage))
         self.dial_ui.vincodeEdit.setText(vincode)
@@ -67,6 +72,7 @@ class Order_status(QtWidgets.QDialog):
         self.dial_ui.engineEdit.setText(enginecode)
         self.dial_ui.numberEdit.setText(gov_number)
         self.dial_ui.dateTimeEdit.setDateTime(finish_date_z)
+        self.dial_ui.sumZEdit.setText(str(sum_z))
 
         self.dial_ui.chosedUsluga.setRowCount(len(self.db.get_serv_stat(id_cust, id_z)))
 
