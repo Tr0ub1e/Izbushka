@@ -63,7 +63,9 @@ class Order_status(QtWidgets.QDialog):
 
         company, model, gov_number, \
         enginecode, vincode, milleage, \
-        finish_date_z, sum_z = self.db.get_more_serv_stat(id_cust, id_z)[0]
+        finish_date_z = self.db.get_more_serv_stat(id_cust, id_z)[0]
+
+        sum_z = self.db.get_sum_z(id_z)
 
         self.dial_ui.milliageEdit.setText(str(milleage))
         self.dial_ui.vincodeEdit.setText(vincode)
@@ -72,7 +74,7 @@ class Order_status(QtWidgets.QDialog):
         self.dial_ui.engineEdit.setText(enginecode)
         self.dial_ui.numberEdit.setText(gov_number)
         self.dial_ui.dateTimeEdit.setDateTime(finish_date_z)
-        self.dial_ui.sumZEdit.setText(str(sum_z))
+        self.dial_ui.sumZEdit.setText(str(*sum_z))
 
         self.dial_ui.chosedUsluga.setRowCount(len(self.db.get_serv_stat(id_cust, id_z)))
 

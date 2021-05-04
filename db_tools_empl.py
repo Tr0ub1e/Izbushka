@@ -1,3 +1,4 @@
+import datetime
 from mysql.connector import connect, Error
 from PyQt5.QtCore import QDate, Qt
 
@@ -75,16 +76,40 @@ class Employee_db():
         self.cursor.execute(querry, (id_empl,))
         return self.cursor.fetchall()
 
-    def finish_task(self, id_serv_z):
+    def finish_task(self, id_serv_z, id_empl):
 
         q = "update(services_z) set status_serv = 'готово' where id_services_z = %s"
 
         self.cursor.execute(q, (id_serv_z,))
         self.connection.commit()
 
+        q = """
+            insert into empl_tasks(id_empl, id_serv_z, status_serv, et_datetime)
+            values (%s, %s, %s, %s)
+            """
+        time_ = datetime.datetime.now()
+        time_.strftime('%Y-%m-%d %H:%M:%S')
+        self.cursor.execute(q, (id_empl, id_serv_z, 'готово', time_.strftime('%Y-%m-%d %H:%M:%S')))
+        self.connection.commit()
+
         q = "delete from shedule_ where id_serv_z = %s"
         self.cursor.execute(q, (id_serv_z,))
         self.connection.commit()
+
+    def show_history(self, id_empl, *args):
+
+        if len(args) == 0:
+            q = 'select * from empl_tasks where id_empl = %s'
+            self.cursor.execute(q, (id_empl,))
+        else:
+            q = """select * from empl_tasks where id_empl = %s and
+                   et_datetime between %s and %s
+                """
+            start, stop = args
+            self.cursor.execute(q, (id_empl, start, stop))
+
+        return self.cursor.fetchall()
+
 
     def insert_employees(self, fio, rental_date, rate, spec, phone):
 

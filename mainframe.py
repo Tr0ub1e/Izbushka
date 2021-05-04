@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtGui
 import decorators as ds
 from myform import Ui_MainWindow
 from db_tools import autowork_db
+from add_usluga_dialog import Add_usluga
 from add_spec_dialog import Add_specialization
 from add_task_dialog import Add_Task
 from connection_dialog import ConDial
@@ -11,6 +12,7 @@ from add_employee_dialog import EmpDial
 from add_cust_dialog import CustDial
 from add_auto_cust_dialog import AddAutoCust
 from order_status_dialog import Order_status
+from empl_history_dialog import History
 from cars_inside_dial import Cars
 from usluga_table_dialog import Usluga
 from show_parts_dialog import Parts
@@ -83,6 +85,56 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             print(traceback.format_exc())
             my_dial.error_msg()
 
+    @ds.update_windows
+    def raise_add_usluga(self):
+        Add_usluga(self.connection, self.cursor, 'insert')
+
+    @ds.update_windows
+    def raise_change_usluga(self):
+
+        msg = QtWidgets.QMessageBox()
+
+        try:
+            if self.ui.uslugiTree.currentItem().childCount() == 0:
+                id_serv = self.ui.uslugiTree.currentItem().id_item
+                Add_usluga(self.connection, self.cursor, 'update', id_serv)
+
+            else:
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Нельзя изменять услуги с заказами")
+                msg.setWindowTitle("Ошибка")
+                msg.exec_()
+
+        except Exception as e:
+            print(e)
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Вы не выбрали услугу")
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
+
+    @ds.update_windows
+    def delete_usluga_(self):
+        msg = QtWidgets.QMessageBox()
+
+        resp = msg.question(self.win, "Удаление услуги", \
+                        "Вы уверены что хотите удалить услугу? ", msg.Yes|msg.No)
+
+        if resp == msg.Yes:
+
+            try:
+                if self.ui.uslugiTree.currentItem().childCount() == 0:
+                    id_serv = self.ui.uslugiTree.currentItem().id_item
+                    self.delete_usluga(id_serv)
+                else:
+                    msg.setIcon(QtWidgets.QMessageBox.Critical)
+                    msg.setText("Нельзя удалять услуги с заказами")
+                    msg.setWindowTitle("Ошибка")
+                    msg.exec_()
+            except Exception as e:
+                raise
+            else:
+                pass
+
     def raise_show_parts(self):
         Parts(self.connection, self.cursor)
 
@@ -92,10 +144,25 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
     def raise_show_usluga(self):
         Usluga(self.connection, self.cursor)
 
+    def raise_show_empl_history(self):
+
+        try:
+            if not self.ui.emplTree.currentItem().text(0) \
+                        in [name_spec for _, name_spec in self.show_spec()]:
+
+                id_empl = self.ui.emplTree.currentItem().id_item
+                History(self.connection, self.cursor, id_empl)
+        except:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Critical)
+            msg.setText("Ошибка")
+            msg.setInformativeText('Вы не выбрали работника')
+            msg.setWindowTitle("Ошибка")
+            msg.exec_()
+
+    @ds.update_windows
     def raise_add_spec(self):
         Add_specialization(self.connection, self.cursor, 'insert')
-        self.ui.emplTree.clear()
-        self.employees()
 
     def raise_change_spec(self):
 
@@ -153,18 +220,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             finally:
                 msg.exec_()
 
+    @ds.update_windows
     def raise_add_auto(self):
-        """
-        """
         try:
             fio = self.ui.clientTree.currentItem().text(0)
             id_client = self.ui.clientTree.currentItem().id_item
 
             my_dial = AddAutoCust(self.connection, self.cursor, id_client, fio)
-
-            self.ui.clientTable.setRowCount(0)
-            self.clients_table()
-            self.uslugi()
 
         except:
             print(traceback.format_exc())
@@ -175,15 +237,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
+    @ds.update_windows
     def raise_add_emp(self):
         """
         Выводит диалог добавления нового работника в БД
         """
         my_dial = EmpDial(self.show_spec(), self.connection, \
                                                     self.cursor, 'insert')
-        self.ui.emplTree.clear()
-        self.clear_labels()
-        self.employees()
 
     def raise_change_empl(self):
 
@@ -216,13 +276,12 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setWindowTitle("Ошибка")
             msg.exec_()
 
+    @ds.update_windows
     def raise_add_cust(self):
         """
         Выводит диалог добавления нового клиента
         """
         my_dial = CustDial(self.connection, self.cursor, "insert")
-        self.ui.clientTree.clear()
-        self.clients()
 
     def raise_change_cust(self):
 
@@ -352,7 +411,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         for id_serv, name_serv, _, _ in self.get_uslugi():
 
-            parent = QtWidgets.QTreeWidgetItem(self.ui.uslugiTree)
+            parent = Ext_Item(self.ui.uslugiTree, id_serv)
             parent.setFlags(parent.flags())
             parent.setText(0, name_serv)
 
@@ -452,11 +511,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         except:
             print(traceback.format_exc())
 
+    @ds.update_windows
     def make_task(self):
-
-        dialog = Add_Task(self.connection, self.cursor)
-        self.uslugi()
-        self.zakaz_tree()
+        Add_Task(self.connection, self.cursor)
 
     def delete_task_(self):
 
@@ -529,7 +586,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                 id_serv_z = self.ui.tasksTable.\
                     item(self.ui.tasksTable.currentRow(), 0).text()[len('Задание №'):]
 
-                self.finish_task(int(id_serv_z))
+                id_empl = self.ui.emplTree.currentItem().id_item
+
+                self.finish_task(int(id_serv_z), id_empl)
 
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText("Завершение выполнено успешно!")

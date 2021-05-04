@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -118,7 +119,7 @@ class Add_Task(QtWidgets.QDialog):
             self.db.insert_shedule(*id_date, id_time, id_serv_z, id_empl)
 
         except Exception as e:
-            print(e)
+            print(traceback.format_exc())
             self.error_msg()
 
         self.dial.close()

@@ -31,6 +31,47 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
     def close_db(self):
         self.connection.close()
 
+    def insert_usluga(self, name_usluga, cost, duration):
+
+        q = """
+            insert into services(name_serv, price, duration)
+            values(%s, %s, %s)
+            """
+
+        self.cursor.execute(q, (name_usluga, cost, duration))
+        self.connection.commit()
+
+    def update_usluga(self, id_serv, d={}):
+
+        q = ("update(services) set ", "where id_serv = %s")
+
+        for i in d.items():
+
+            _ = q[0] + "{} = '{}'".format(*i)+q[1]
+
+            self.cursor.execute(_, (id_serv,))
+            self.connection.commit()
+
+    def delete_usluga(self, id_serv):
+
+        q = 'delete from services where id_serv = %s'
+
+        self.cursor.execute(q, (id_serv,))
+        self.connection.commit()
+
+    def get_sum_z(self, id_z):
+        q = """
+            Select sum(price+ifnull(cost_zap, 0))
+            from zakaz
+	               join services_z using(id_z)
+                   join services using(id_serv)
+                   left join zapchasti_sklad using(id_zap)
+                   where id_z = %s
+            """
+        self.cursor.execute(q, (id_z,))
+
+        return self.cursor.fetchone()
+
     def get_zapchasti_car(self, id_car):
 
         q = "select * from zapchasti_sklad where id_car = %s"
@@ -50,7 +91,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
     def get_zapchasti(self):
         q = 'select * FROM autowork.zapchasti_sklad join car using(id_car)'
         self.cursor.execute(q)
-        
+
         return self.cursor.fetchall()
 
     def get_pending_uslugi(self, id_serv):
@@ -86,6 +127,17 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         self.connection.commit()
 
     def delete_task(self, id_shedule):
+
+        q = "select id_empl, id_serv_z FROM shedule_ where id_shedule = %s"
+        self.cursor.execute(q, (id_shedule,))
+    
+        id_empl, id_serv_z = self.cursor.fetchone()
+
+        q = """insert into empl_tasks(id_empl, id_serv_z, status_serv, et_datetime)
+            values(%s, %s, 'отменено', now())
+            """
+        self.cursor.execute(q, (id_empl, id_serv_z))
+        self.connection.commit()
 
         q = "select s.id_serv_z from shedule_ as s where s.id_shedule = %s"
         self.cursor.execute(q, (id_shedule,))
@@ -138,6 +190,17 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         self.cursor.execute(q, (id_serv_z,))
         self.connection.commit()
 
+
+        q = """
+            insert into empl_tasks(id_empl, id_serv_z, status_serv, et_datetime)
+            values (%s, %s, %s, %s)
+            """
+        time_ = datetime.datetime.now()
+        time_.strftime('%Y-%m-%d %H:%M:%S')
+        self.cursor.execute(q, (id_empl, id_serv_z, 'выполняется', time_.strftime('%Y-%m-%d %H:%M:%S')))
+        self.connection.commit()
+
+
     def get_id_shedule(self, id_date, id_time, id_serv_z, id_empl):
 
         id_shedule = """
@@ -188,7 +251,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         query = """
             select
                 company, model, gov_number, enginecode,
-                vincode, milleage, finish_date_z, sum_z
+                vincode, milleage, finish_date_z
             FROM autowork.zakaz
                 join services_z using(id_z)
                 join services using(id_serv)
@@ -214,7 +277,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         return self.cursor.fetchone()
 
     def insert_zakaz(self, id_cust, id_auto, car_number, duration,
-                        vincode, enginecode, milleage, sum_z):
+                        vincode, enginecode, milleage):
 
         time = datetime.datetime.now()
 
@@ -227,20 +290,20 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         car_pos = """
                     insert into autowork.zakaz
                     (id_cust, id_car, gov_number, date_z, finish_date_z,
-                    vincode, enginecode, milleage, sum_z)
+                    vincode, enginecode, milleage)
                     values (%s, %s, %s, %s, %s, %s, %s, %s, %s);
                   """
 
         self.cursor.execute(car_pos, (id_cust, id_auto, car_number,
                             time.strftime("%Y-%m-%d %H:%M:%S"),
                             finish_date.strftime("%Y-%m-%d %H:%M:%S"),
-                            vincode, enginecode, milleage, sum_z))
+                            vincode, enginecode, milleage))
         self.connection.commit()
 
         return self.get_id_zakaz(id_cust, id_auto, car_number,
                                 time.strftime("%Y-%m-%d %H:%M:%S"),
                                 finish_date.strftime("%Y-%m-%d %H:%M:%S"),
-                                vincode, milleage, enginecode, sum_z)
+                                vincode, milleage, enginecode)
 
     def get_id_zakaz(self, *args):
 
@@ -254,8 +317,7 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
                     z.finish_date_z = %s and
                     z.vincode = %s and
                     z.milleage = %s and
-                    z.enginecode = %s and
-                    z.sum_z = %s
+                    z.enginecode = %s
                  """
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()

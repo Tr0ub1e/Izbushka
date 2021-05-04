@@ -30,7 +30,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -645,6 +645,13 @@
          <widget class="QPushButton" name="delEmpl">
           <property name="text">
            <string>Удалить работника</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="taskHistory">
+          <property name="text">
+           <string>История заданий</string>
           </property>
          </widget>
         </item>

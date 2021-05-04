@@ -179,9 +179,8 @@ class AddAutoCust(QtWidgets.QDialog):
                 except Exception as e:
                     continue
 
-
             id_z = self.db.insert_zakaz(self.id_client, *id_auto, car_number,
-                self.duration, vincode, enginecode, milleage, int(cost))
+                self.duration, vincode, enginecode, milleage)
 
             for id_serv, items in id_usluga:
 
@@ -193,9 +192,6 @@ class AddAutoCust(QtWidgets.QDialog):
                     for id_part, count_p in items:
                         for j in range(count_p):
                             self.db.insert_uslugi_zakaz(*id_z, id_serv, id_part)
-
-        #    for id_zap, kol_vo in id_zapch:
-        #        self.db.insert_zap_zakaz(*id_z, id_zap, kol_vo)
 
         except Exception as e:
             print(traceback.format_exc())

@@ -39,6 +39,8 @@ def disconnect_(func):
         self.ui.changeEmpl.disconnect()
         self.ui.delEmpl.disconnect()
 
+        self.ui.taskHistory.disconnect()
+
         self.ui.addCust.disconnect()
         self.ui.changeCust.disconnect()
         self.ui.delCust.disconnect()
@@ -48,6 +50,10 @@ def disconnect_(func):
         self.ui.delSpec.disconnect()
 
         self.ui.addZakaz.disconnect()
+
+        self.ui.addUsluga.disconnect()
+        self.ui.changeUsluga.disconnect()
+        self.ui.delUsluga.disconnect()
 
         self.ui.showUslugi.disconnect()
         self.ui.carsInService.disconnect()
@@ -66,6 +72,8 @@ def connect_(func):
         self.ui.changeEmpl.clicked.connect(self.raise_change_empl)
         self.ui.delEmpl.clicked.connect(self.delete_empl)
 
+        self.ui.taskHistory.clicked.connect(self.raise_show_empl_history)
+
         self.ui.addSpec.clicked.connect(self.raise_add_spec)
         self.ui.changeSpec.clicked.connect(self.raise_change_spec)
         self.ui.delSpec.clicked.connect(self.delete_spec)
@@ -75,6 +83,10 @@ def connect_(func):
         self.ui.changeCust.clicked.connect(self.raise_change_cust)
 
         self.ui.addZakaz.clicked.connect(self.raise_add_auto)
+
+        self.ui.addUsluga.clicked.connect(self.raise_add_usluga)
+        self.ui.changeUsluga.clicked.connect(self.raise_change_usluga)
+        self.ui.delUsluga.clicked.connect(self.delete_usluga_)
 
         self.ui.addTimetable.clicked.connect(self.make_task)
         self.ui.delTimetable.clicked.connect(self.delete_task_)
