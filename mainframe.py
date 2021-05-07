@@ -616,4 +616,4 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             Order_status(self.connection, self.cursor, id_cust, id_z)
 
         except:
-            pass
+            print(traceback.format_exc())
