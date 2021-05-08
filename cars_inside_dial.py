@@ -7,7 +7,6 @@ class Cars(QtWidgets.QDialog):
     def __init__(self, con, cur):
         super(Cars, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
         self.db = autowork_db()
@@ -15,18 +14,18 @@ class Cars(QtWidgets.QDialog):
         self.db.connection = con
         self.db.cursor = cur
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         headers = ('Марка', 'Модель', 'Гос номер')
-        self.dial.setWindowTitle('Автомобили в сервисе')
+        self.setWindowTitle('Автомобили в сервисе')
 
         for i, head in enumerate(headers):
             self.dial_ui.tableWidget.horizontalHeaderItem(i).setText(head)
 
         self.fill_data()
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_data(self):
 

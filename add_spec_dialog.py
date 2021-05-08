@@ -11,11 +11,10 @@ class Add_specialization(QtWidgets.QDialog):
         self.db = autowork_db()
         self.db.connection, self.db.cursor = con, cursor
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         if type_ == 'insert':
             self.dial_ui.pushButton.clicked.connect(self.insert_spec)
@@ -24,7 +23,8 @@ class Add_specialization(QtWidgets.QDialog):
             self.old_name = data
             self.dial_ui.lineEdit.setText(data)
             self.dial_ui.pushButton.clicked.connect(self.change_spec)
-        self.dial.exec_()
+
+        self.exec_()
 
     def insert_spec(self):
 
@@ -36,7 +36,7 @@ class Add_specialization(QtWidgets.QDialog):
                 return
 
         self.db.add_spec(name_spec)
-        self.dial.close()
+        self.close()
 
     def change_spec(self):
 
@@ -48,10 +48,10 @@ class Add_specialization(QtWidgets.QDialog):
                 if i in '1234567890!@#$%^&*(_+)':
                     self.error_msg()
                     return
-                    
+
             self.db.update_spec(self.old_name, new_name)
 
-        self.dial.close()
+        self.close()
 
     def error_msg(self):
 

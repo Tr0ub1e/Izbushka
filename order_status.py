@@ -15,6 +15,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(1070, 510)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("ui\\favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.label_13 = QtWidgets.QLabel(Dialog)
@@ -196,7 +199,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Статус заказа"))
+        Dialog.setWindowTitle(_translate("Dialog", "Обзор заказа"))
         self.label_13.setText(_translate("Dialog", "Пробег"))
         self.label_6.setText(_translate("Dialog", "Гос номер"))
         self.label.setText(_translate("Dialog", "Марка"))

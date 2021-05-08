@@ -10,11 +10,10 @@ class Count_Orders(QtWidgets.QDialog):
     def __init__(self, con, cursor, mark, model, id_serv):
         super(Count_Orders, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.db = autowork_db()
         self.db.connection, self.db.cursor = con, cursor
@@ -31,7 +30,7 @@ class Count_Orders(QtWidgets.QDialog):
         self.dial_ui.addZapch.clicked.connect(self.add_parts)
         self.dial_ui.delZapch.clicked.connect(self.del_parts)
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_zapch(self, mark, model):
 
@@ -69,7 +68,7 @@ class Count_Orders(QtWidgets.QDialog):
 
         if self.dial_ui.checkBox.isChecked():
             self.data.append(self.value)
-            self.dial.close()
+            self.close()
 
         for i in range(self.dial_ui.chosedParts.rowCount()):
 
@@ -81,7 +80,7 @@ class Count_Orders(QtWidgets.QDialog):
             except:
                 continue
 
-        self.dial.close()
+        self.close()
 
     def add_parts(self):
 

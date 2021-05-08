@@ -8,15 +8,14 @@ class CustDial(QtWidgets.QDialog):
     def __init__(self, con, cur, type_, up_st=()):
         super(CustDial, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
         self.db = autowork_db()
 
         self.db.connection = con
         self.db.cursor = cur
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         if type_ == "insert":
             self.dial_ui.pushButton.clicked.connect(self.insert_data)
@@ -28,7 +27,7 @@ class CustDial(QtWidgets.QDialog):
 
             self.dial_ui.pushButton.clicked.connect(self.update_data)
 
-        self.dial.exec_()
+        self.exec_()
 
     def insert_data(self):
 
@@ -40,7 +39,7 @@ class CustDial(QtWidgets.QDialog):
             self.error_msg()
 
         finally:
-            self.dial.close()
+            self.close()
 
     def get_form_data(self):
 
@@ -88,7 +87,7 @@ class CustDial(QtWidgets.QDialog):
 
         self.db.update_customers(self.id_cust, data)
 
-        self.dial.close()
+        self.close()
 
     def error_msg(self):
 

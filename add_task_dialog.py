@@ -20,11 +20,10 @@ class Add_Task(QtWidgets.QDialog):
         self.id_zakaz = []
         self.id_time = []
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.dial_ui.dateEdit.setDate(datetime.now().date())
 
@@ -41,7 +40,7 @@ class Add_Task(QtWidgets.QDialog):
 
         self.dial_ui.pushButton.clicked.connect(self.insert_task)
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_serv(self):
 
@@ -122,7 +121,7 @@ class Add_Task(QtWidgets.QDialog):
             print(traceback.format_exc())
             self.error_msg()
 
-        self.dial.close()
+        self.close()
 
     def error_msg(self):
 

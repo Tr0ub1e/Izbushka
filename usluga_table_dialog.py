@@ -7,7 +7,6 @@ class Usluga(QtWidgets.QDialog):
     def __init__(self, con, cur):
         super(Usluga, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
         self.db = autowork_db()
@@ -20,7 +19,7 @@ class Usluga(QtWidgets.QDialog):
 
         self.fill_data()
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_data(self):
 

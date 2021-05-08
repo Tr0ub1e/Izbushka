@@ -329,6 +329,12 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
         self.cursor.execute(get_id, args)
         return self.cursor.fetchone()
 
+    def insert_car(self, mark, model):
+
+        q = 'insert into autowork.car(company, model) values (%s, %s)'
+
+        self.cursor.execute(q, (mark, model))
+
     def get_cars(self):
 
         q = 'select company, model, gov_number \

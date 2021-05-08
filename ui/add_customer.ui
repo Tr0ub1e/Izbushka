@@ -11,128 +11,80 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Добавление клиента</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>270</y>
-     <width>93</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>OK</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="fam">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>55</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Фамилия</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="famEdit">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>301</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Иванов</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="phoneEdit">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>230</y>
-     <width>201</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="inputMask">
-    <string/>
-   </property>
-   <property name="text">
-    <string>381234567890</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="phone">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>230</y>
-     <width>55</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Телефон</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="name">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>55</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Имя</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="nameEdit">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>120</y>
-     <width>301</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Иван</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="fathEdit">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>190</y>
-     <width>301</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Иван</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="fath">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>160</y>
-     <width>55</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Отчество</string>
-   </property>
-  </widget>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>favicon.ico</normaloff>favicon.ico</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="fam">
+     <property name="text">
+      <string>Фамилия</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="famEdit">
+     <property name="text">
+      <string>Иванов</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="name">
+     <property name="text">
+      <string>Имя</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="nameEdit">
+     <property name="text">
+      <string>Иван</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="fath">
+     <property name="text">
+      <string>Отчество</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="fathEdit">
+     <property name="text">
+      <string>Иван</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="phone">
+     <property name="text">
+      <string>Телефон</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="phoneEdit">
+     <property name="inputMask">
+      <string/>
+     </property>
+     <property name="text">
+      <string>381234567890</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

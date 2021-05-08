@@ -58,6 +58,7 @@ def disconnect_(func):
         self.ui.showUslugi.disconnect()
         self.ui.carsInService.disconnect()
         self.ui.showSklad.disconnect()
+        self.ui.addCar.disconnect()
 
         return func(self)
 
@@ -97,6 +98,8 @@ def connect_(func):
         self.ui.showUslugi.triggered.connect(self.raise_show_usluga)
         self.ui.carsInService.triggered.connect(self.raise_show_cars)
         self.ui.showSklad.triggered.connect(self.raise_show_parts)
+
+        self.ui.addCar.triggered.connect(self.raise_add_car)
 
         return func(self)
     return inner

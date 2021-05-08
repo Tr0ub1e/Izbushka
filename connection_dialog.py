@@ -10,15 +10,14 @@ class ConDial(QtWidgets.QDialog):
         self.db = autowork_db()
         self.con, self.cursor = None, None
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.dial_ui.pushButton.clicked.connect(self.mainDial)
 
-        self.dial.exec_()
+        self.exec_()
 
     def access_msg(self):
 
@@ -46,4 +45,4 @@ class ConDial(QtWidgets.QDialog):
             return self.db.make_con(user, pwd)
 
         finally:
-            self.dial.close()
+            self.close()

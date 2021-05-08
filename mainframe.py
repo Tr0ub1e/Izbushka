@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtGui
 import decorators as ds
 from myform import Ui_MainWindow
 from db_tools import autowork_db
+from add_car_dialog import CarDial
 from add_usluga_dialog import Add_usluga
 from add_spec_dialog import Add_specialization
 from add_task_dialog import Add_Task
@@ -28,16 +29,12 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         """
         super(MainFrame, self).__init__()
 
-        self.win = QtWidgets.QMainWindow()
-
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self.win)
-        self.ui.retranslateUi(self.win)
+        self.ui.setupUi(self)
+        self.ui.retranslateUi(self)
 
         self.ui.make_con.triggered.connect(self.raise_con_dialog)
         self.ui.discon.triggered.connect(self.raise_discon_dialog)
-
-        self.win.show()
 
     @ds.disconnect_
     def raise_discon_dialog(self):
@@ -84,6 +81,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         except Exception as e:
             print(traceback.format_exc())
             my_dial.error_msg()
+
+    @ds.update_windows
+    def raise_add_car(self):
+        CarDial(self.connection, self.cursor)
 
     @ds.update_windows
     def raise_add_usluga(self):

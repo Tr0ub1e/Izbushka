@@ -8,15 +8,14 @@ class EmpDial(QtWidgets.QDialog):
     def __init__(self, specs, con, cur, type_, up_st=()):
         super(EmpDial, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
         self.db = autowork_db()
 
         self.db.connection = con
         self.db.cursor = cur
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.fill_box(specs)
 
@@ -28,11 +27,11 @@ class EmpDial(QtWidgets.QDialog):
 
             self.fio, self.rental_date, self.rate, \
                                         self.spec, self.phone = self.get_data()
-                                        
+
             self.dial_ui.pushButton.clicked.connect(self.update_data)
 
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_box(self, items):
 
@@ -66,7 +65,7 @@ class EmpDial(QtWidgets.QDialog):
             self.error_msg()
 
         finally:
-            self.dial.close()
+            self.close()
 
     def insert_data(self):
 
@@ -92,7 +91,7 @@ class EmpDial(QtWidgets.QDialog):
             self.error_msg()
 
         finally:
-            self.dial.close()
+            self.close()
 
     def update_data(self):
 

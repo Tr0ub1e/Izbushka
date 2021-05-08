@@ -34,7 +34,7 @@ class PrintHandler(QObject):
         if self.m_inPrintPreview:
             return
         self.m_inPrintPreview = True
-        printer = QPrinter()
+        printer = QPrinter(QPrinter.HighResolution)
         preview = QPrintPreviewDialog(printer, self.m_page.view())
         preview.paintRequested.connect(self.printDocument)
         preview.exec()

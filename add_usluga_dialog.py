@@ -8,7 +8,6 @@ class Add_usluga(QtWidgets.QDialog):
     def __init__(self, con, cur, type_, id_serv=int):
         super(Add_usluga, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
         self.db = autowork_db()
@@ -20,8 +19,8 @@ class Add_usluga(QtWidgets.QDialog):
 
         self.up_st = []
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         if type_ == 'insert':
             self.dial_ui.pushButton.clicked.connect(self.insert_usluga_action)
@@ -30,7 +29,7 @@ class Add_usluga(QtWidgets.QDialog):
             self.fill_data()
             self.dial_ui.pushButton.clicked.connect(self.update_usluga_action)
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_data(self):
 
@@ -60,7 +59,7 @@ class Add_usluga(QtWidgets.QDialog):
 
         self.db.update_usluga(self.id_serv, d)
 
-        self.dial.close()
+        self.close()
 
     def insert_usluga_action(self):
 
@@ -73,4 +72,4 @@ class Add_usluga(QtWidgets.QDialog):
         except Exception as e:
             print(e)
         finally:
-            self.dial.close()
+            self.close()

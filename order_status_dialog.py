@@ -9,7 +9,6 @@ class Order_status(QtWidgets.QDialog):
     def __init__(self, con, cur, id_cust, id_z):
         super(Order_status, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
         self.db = autowork_db()
@@ -28,7 +27,7 @@ class Order_status(QtWidgets.QDialog):
         self.dial_ui.printButton.clicked.connect(self.print_)
 
         self.fill_data(id_cust, id_z)
-        self.dial.exec_()
+        self.exec_()
 
     def print_(self):
 
@@ -62,7 +61,7 @@ class Order_status(QtWidgets.QDialog):
 
         if resp == msg.Yes:
             self.db.delete_zakaz(self.id_z)
-            self.dial.close()
+            self.close()
         else:
             return
 
@@ -82,7 +81,7 @@ class Order_status(QtWidgets.QDialog):
                     return
 
             self.db.finish_zakaz(self.id_cust, self.id_z)
-            self.dial.close()
+            self.close()
         else:
             return
 

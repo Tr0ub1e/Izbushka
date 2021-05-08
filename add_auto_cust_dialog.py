@@ -13,7 +13,6 @@ class AddAutoCust(QtWidgets.QDialog):
     def __init__(self, connection, cursor, *args, **kwargs):
         super(AddAutoCust, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
         self.db = autowork_db()
 
@@ -43,7 +42,7 @@ class AddAutoCust(QtWidgets.QDialog):
 
         self.dial_ui.pushButton.clicked.connect(self.insert_data)
 
-        self.dial.exec_()
+        self.exec_()
 
     def fill_usluga(self):
 
@@ -198,7 +197,7 @@ class AddAutoCust(QtWidgets.QDialog):
             print(traceback.format_exc())
 
         finally:
-            self.dial.close()
+            self.close()
 
     def fill_data(self):
 

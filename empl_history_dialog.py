@@ -7,7 +7,6 @@ class History(QtWidgets.QDialog):
     def __init__(self, con, cur, id_empl):
         super(History, self).__init__()
 
-        self.dial = QtWidgets.QDialog()
         self.dial_ui = Ui_Dialog()
 
         self.db = autowork_db()
@@ -22,7 +21,7 @@ class History(QtWidgets.QDialog):
         self.fill_data()
 
         self.dial_ui.pushButton.clicked.connect(self.upd_data)
-        self.dial.exec_()
+        self.exec_()
 
     def fill_data(self):
 
