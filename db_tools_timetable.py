@@ -45,6 +45,22 @@ class Time_db():
         self.cursor.execute(q)
         return self.cursor.fetchall()
 
+    def get_task_info(self, id_shedule):
+
+        q = """
+            select name_serv, name_zap, finish_date_z, name_spec, fio from shedule_
+            join services_z on
+            id_serv_z = id_services_z join zakaz using(id_z)
+            join services using(id_serv)
+            left join zapchasti_sklad using(id_zap)
+            join employees using(id_empl)
+            join emp_pos on id_worker = id_empl
+            join specialization on id_pos = id_spec
+            where id_shedule = %s
+            """
+        self.cursor.execute(q, (id_shedule,))
+        return self.cursor.fetchone()
+
     def get_timetable_data(self, id_date, id_time):
 
         q = """select id_shedule, company, model, gov_number, fio, name_zap from timetable_date

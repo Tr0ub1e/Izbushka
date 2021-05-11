@@ -69,11 +69,17 @@
    </item>
    <item>
     <widget class="QLineEdit" name="phoneEdit">
+     <property name="inputMethodHints">
+      <set>Qt::ImhDigitsOnly</set>
+     </property>
      <property name="inputMask">
       <string/>
      </property>
      <property name="text">
-      <string>381234567890</string>
+      <string>380660991234</string>
+     </property>
+     <property name="maxLength">
+      <number>12</number>
      </property>
     </widget>
    </item>

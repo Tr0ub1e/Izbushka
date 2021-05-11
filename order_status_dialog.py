@@ -19,8 +19,8 @@ class Order_status(QtWidgets.QDialog):
         self.id_z = id_z
         self.id_cust = id_cust
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.dial_ui.delZakaz.clicked.connect(self.delete_zakaz_action)
         self.dial_ui.finishZak.clicked.connect(self.finish_zakaz_action)
@@ -56,7 +56,7 @@ class Order_status(QtWidgets.QDialog):
     def delete_zakaz_action(self):
 
         msg = QtWidgets.QMessageBox()
-        resp = msg.question(self.dial, "Удаление заказа", \
+        resp = msg.question(self, "Удаление заказа", \
                         "Вы уверены что хотите удалить заказ? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
@@ -68,7 +68,7 @@ class Order_status(QtWidgets.QDialog):
     def finish_zakaz_action(self):
 
         msg = QtWidgets.QMessageBox()
-        resp = msg.question(self.dial, "Завершение заказа", \
+        resp = msg.question(self, "Завершение заказа", \
                         "Вы уверены что хотите завершенить заказ? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:

@@ -90,6 +90,7 @@ def connect_(func):
         self.ui.delUsluga.clicked.connect(self.delete_usluga_)
 
         self.ui.addTimetable.clicked.connect(self.make_task)
+        self.ui.specTable.itemDoubleClicked.connect(self.task_info)
         self.ui.delTimetable.clicked.connect(self.delete_task_)
 
         self.ui.clientTable.cellDoubleClicked.connect(self.get_status_z)
@@ -98,6 +99,7 @@ def connect_(func):
         self.ui.showUslugi.triggered.connect(self.raise_show_usluga)
         self.ui.carsInService.triggered.connect(self.raise_show_cars)
         self.ui.showSklad.triggered.connect(self.raise_show_parts)
+        self.ui.emplArch.triggered.connect(self.empl_arch_dialog)
 
         self.ui.addCar.triggered.connect(self.raise_add_car)
 

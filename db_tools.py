@@ -163,14 +163,18 @@ class autowork_db(Employee_db, Customer_db, Spec_db, Time_db):
 
         q = 'call add_orders_c(%s)'
         self.cursor.execute(q, (id_cust,))
-        self.delete_zakaz(id_z)
+        self.delete_zakaz(id_z, True)
 
-    def delete_zakaz(self, id_z):
-        q = (
-            "insert into arch_zakaz select * from zakaz where id_z = %s",
-            "insert into arch_services_z select * from services_z where id_z = %s",
+    def delete_zakaz(self, id_z, finish=False):
+
+        q = [
+            "insert into arch_zakaz select *, now(), 'завершен' from zakaz where id_z = %s",
+            "insert into arch_services_z select *, now() from services_z where id_z = %s",
             "delete from zakaz where id_z = %s"
-            )
+            ]
+
+        if not finish:
+            q[0] = "insert into arch_zakaz select *, now(), 'отменен' from zakaz where id_z = %s"
 
         for i in q:
             self.cursor.execute(i, (id_z,))

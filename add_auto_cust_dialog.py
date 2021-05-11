@@ -2,7 +2,7 @@ import traceback
 from PyQt5 import QtWidgets
 from add_auto_cust import Ui_Dialog
 from db_tools import autowork_db
-from datetime import time, timedelta
+from datetime import time, timedelta, datetime
 from count_parts_dialog import Count_Parts
 from count_orders_dialog import Count_Orders
 from extended_qtablewidgetitem import Ext_TableItem
@@ -27,8 +27,8 @@ class AddAutoCust(QtWidgets.QDialog):
         self.duration = time(0,0,0)
         self.duration.strftime("%H:%M:%S")
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.fill_data()
         self.fill_comp()
@@ -71,7 +71,12 @@ class AddAutoCust(QtWidgets.QDialog):
             serv_cost = int(self.dial_ui.ableUsluga.item(row, 1).text())
 
             dialog = Count_Orders(self.db.connection, self.db.cursor, mark, model, id_serv)
-            data, kol_vo, part_cost = dialog.data, dialog.value, dialog.part_cost
+
+            try:
+                data, kol_vo, part_cost = dialog.data, dialog.value, dialog.part_cost
+
+            except:
+                return
 
             for i in range(3):
                 item = self.dial_ui.ableUsluga.takeItem(row, i)
@@ -171,6 +176,17 @@ class AddAutoCust(QtWidgets.QDialog):
             prod_year = self.dial_ui.yearEdit.text()
             cost = self.dial_ui.resultEdit.text()
 
+
+            if int(prod_year) > int(datetime.now().year) \
+                or int(prod_year) < 1950:
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Critical)
+                msg.setText("Год не может быть больше " +
+                            str(datetime.now().year) + " и меньше 1950")
+                msg.setWindowTitle("Ошибка")
+                msg.exec_()
+                return
+
             for i in range(self.dial_ui.chosedUsluga.rowCount()):
                 try:
                     id_usluga.append((self.dial_ui.chosedUsluga.item(i, 0).id_item,
@@ -196,8 +212,7 @@ class AddAutoCust(QtWidgets.QDialog):
         except Exception as e:
             print(traceback.format_exc())
 
-        finally:
-            self.close()
+        self.close()
 
     def fill_data(self):
 

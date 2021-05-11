@@ -110,6 +110,19 @@ class Employee_db():
 
         return self.cursor.fetchall()
 
+    def show_arch(self, *args):
+
+        if len(args) == 0:
+            q = 'select * from arch_employees'
+            self.cursor.execute(q)
+        else:
+            q = "select * from arch_employees \
+                    where arch_datetime between %s and %s"
+
+            start, stop = args
+            self.cursor.execute(q, (start, stop))
+
+        return self.cursor.fetchall()
 
     def insert_employees(self, fio, rental_date, rate, spec, phone):
 

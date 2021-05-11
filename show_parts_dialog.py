@@ -14,11 +14,11 @@ class Parts(QtWidgets.QDialog):
         self.db.connection = con
         self.db.cursor = cur
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         headers = ('Марка', 'Модель', 'Название', 'Цена', 'Кол-во')
-        self.dial.setWindowTitle('Доступные запчасти')
+        self.setWindowTitle('Доступные запчасти')
 
         self.dial_ui.tableWidget.setColumnCount(5)
 

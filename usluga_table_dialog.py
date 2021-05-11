@@ -14,8 +14,8 @@ class Usluga(QtWidgets.QDialog):
         self.db.connection = con
         self.db.cursor = cur
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.fill_data()
 

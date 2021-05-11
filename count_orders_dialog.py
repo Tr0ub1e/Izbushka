@@ -66,10 +66,6 @@ class Count_Orders(QtWidgets.QDialog):
 
             return
 
-        if self.dial_ui.checkBox.isChecked():
-            self.data.append(self.value)
-            self.close()
-
         for i in range(self.dial_ui.chosedParts.rowCount()):
 
             try:
@@ -80,6 +76,9 @@ class Count_Orders(QtWidgets.QDialog):
             except:
                 continue
 
+        if self.value > self.part_value:
+            self.data.append((None, (self.value - self.part_value)))
+
         self.close()
 
     def add_parts(self):
@@ -87,7 +86,13 @@ class Count_Orders(QtWidgets.QDialog):
         self.dial_ui.chosedParts.setRowCount(self.dial_ui.ableParts.rowCount())
 
         row = self.dial_ui.ableParts.currentRow()
-        dialog = Count_Parts(self.dial_ui.ableParts.item(row, 1).text())
+
+        try:
+            isinstance(self.dial_ui.ableParts.item(row, 1).text(), str)
+            dialog = Count_Parts(self.dial_ui.ableParts.item(row, 1).text())
+        except:
+            return
+
         kol_vo = dialog.value
 
         try:

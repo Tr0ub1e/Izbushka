@@ -30,9 +30,6 @@ class Ui_Dialog(object):
         self.countParts.setDisplayIntegerBase(10)
         self.countParts.setObjectName("countParts")
         self.verticalLayout.addWidget(self.countParts)
-        self.checkBox = QtWidgets.QCheckBox(Dialog)
-        self.checkBox.setObjectName("checkBox")
-        self.verticalLayout.addWidget(self.checkBox)
         self.ableParts = QtWidgets.QTableWidget(Dialog)
         self.ableParts.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.ableParts.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
@@ -92,7 +89,6 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Услуга и запчасти"))
         self.label_2.setText(_translate("Dialog", "Взять"))
-        self.checkBox.setText(_translate("Dialog", "Запчасти не требуются"))
         item = self.ableParts.horizontalHeaderItem(0)
         item.setText(_translate("Dialog", "Детали на складе"))
         item = self.ableParts.horizontalHeaderItem(1)

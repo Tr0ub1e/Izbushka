@@ -15,8 +15,8 @@ class History(QtWidgets.QDialog):
         self.db.cursor = cur
         self.id_empl = id_empl
 
-        self.dial_ui.setupUi(self.dial)
-        self.dial_ui.retranslateUi(self.dial)
+        self.dial_ui.setupUi(self)
+        self.dial_ui.retranslateUi(self)
 
         self.fill_data()
 

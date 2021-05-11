@@ -17,6 +17,8 @@ from empl_history_dialog import History
 from cars_inside_dial import Cars
 from usluga_table_dialog import Usluga
 from show_parts_dialog import Parts
+from detail_task_dialog import TaskInfo
+from empl_arch_history import ArchEmpl
 from extended_QTreeItem import Ext_Item
 from extended_qtablewidgetitem import Ext_TableItem
 
@@ -82,6 +84,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             print(traceback.format_exc())
             my_dial.error_msg()
 
+    def empl_arch_dialog(self):
+        ArchEmpl(self.connection, self.cursor)
+
     @ds.update_windows
     def raise_add_car(self):
         CarDial(self.connection, self.cursor)
@@ -117,7 +122,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
     def delete_usluga_(self):
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Удаление услуги", \
+        resp = msg.question(self, "Удаление услуги", \
                         "Вы уверены что хотите удалить услугу? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
@@ -145,6 +150,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
     def raise_show_usluga(self):
         Usluga(self.connection, self.cursor)
 
+    def task_info(self):
+        try:
+            id_shedule = self.ui.specTable.currentItem().id_item
+            TaskInfo(self.connection, self.cursor, id_shedule)
+        except:
+            return
+
     def raise_show_empl_history(self):
 
         try:
@@ -160,6 +172,9 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setInformativeText('Вы не выбрали работника')
             msg.setWindowTitle("Ошибка")
             msg.exec_()
+
+    def raise_show_zakaz_history(self):
+        pass
 
     @ds.update_windows
     def raise_add_spec(self):
@@ -188,7 +203,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Удаление специальности", \
+        resp = msg.question(self, "Удаление специальности", \
                         "Вы уверены что хотите удалить специальность? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
@@ -309,7 +324,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Удаление сотрудника", \
+        resp = msg.question(self, "Удаление сотрудника", \
                         "Вы уверены что хотите удалить сотрудника? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
@@ -345,7 +360,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Удаление клиента", \
+        resp = msg.question(self, "Удаление клиента", \
                         "Вы уверены что хотите удалить клиента? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
@@ -487,13 +502,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
                     if isinstance(i, tuple):
                         id_shedule, mark, model, gov_number, fio, name_zap = i
-                        new_child = QtWidgets.QTreeWidgetItem(child)
+
+                        new_child = Ext_Item(child, id_shedule)
                         new_child.setFlags(new_child.flags())
 
                         new_child.setText(2, gov_number)
                         new_child.setText(3, mark + ' ' + model)
                         new_child.setText(4, str(fio))
-                        new_child.setText(5, str(id_shedule))
 
     def empl_tasks(self):
 
@@ -520,13 +535,13 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Удаление задания", \
+        resp = msg.question(self, "Удаление задания", \
                         "Вы уверены что хотите удалить задание? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
 
             try:
-                id_shedule = int(self.ui.specTable.currentItem().text(5))
+                id_shedule = self.ui.specTable.currentItem().id_item
                 self.delete_task(id_shedule)
 
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -578,7 +593,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         msg = QtWidgets.QMessageBox()
 
-        resp = msg.question(self.win, "Завершение задания", \
+        resp = msg.question(self, "Завершение задания", \
                         "Вы уверены что хотите завершить задание? ", msg.Yes|msg.No)
 
         if resp == msg.Yes:
