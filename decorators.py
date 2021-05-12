@@ -35,6 +35,8 @@ def disconnect_(func):
         self.clear_table()
         self.clear_labels()
 
+        self.ui.make_con.triggered.connect(self.raise_con_dialog)
+
         self.ui.addEmpl.disconnect()
         self.ui.changeEmpl.disconnect()
         self.ui.delEmpl.disconnect()
@@ -55,9 +57,15 @@ def disconnect_(func):
         self.ui.changeUsluga.disconnect()
         self.ui.delUsluga.disconnect()
 
+        self.ui.addTimetable.disconnect()
+        self.ui.delTimetable.disconnect()
+
         self.ui.showUslugi.disconnect()
         self.ui.carsInService.disconnect()
         self.ui.showSklad.disconnect()
+        self.ui.emplArch.disconnect()
+        self.ui.clientArch.disconnect()
+        self.ui.zakazArch.disconnect()
         self.ui.addCar.disconnect()
 
         return func(self)
@@ -100,6 +108,8 @@ def connect_(func):
         self.ui.carsInService.triggered.connect(self.raise_show_cars)
         self.ui.showSklad.triggered.connect(self.raise_show_parts)
         self.ui.emplArch.triggered.connect(self.empl_arch_dialog)
+        self.ui.clientArch.triggered.connect(self.cust_arch_dialog)
+        self.ui.zakazArch.triggered.connect(self.zakaz_arch_dialog)
 
         self.ui.addCar.triggered.connect(self.raise_add_car)
 

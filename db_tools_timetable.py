@@ -5,6 +5,36 @@ class Time_db():
     connection = None
     cursor = None
 
+    def get_arch_zakaz(self, gov_number=''):
+
+        if gov_number == '':
+            q = "select id_z, gov_number, status, arch_date FROM autowork.arch_zakaz"
+            self.cursor.execute(q)
+        else:
+            q = "select id_z, gov_number, status, arch_date FROM autowork.arch_zakaz \
+             where gov_number = %s"
+
+            self.cursor.execute(q, (gov_number,))
+
+        return self.cursor.fetchall()
+
+    def get_arch_serv_info(self, id_z):
+        q = 'select name_serv, name_zap, status_serv, arch_date from arch_services_z as asz \
+                join services using(id_serv) left join zapchasti_sklad using(id_zap) \
+            where id_z = %s'
+
+        self.cursor.execute(q, (id_z,))
+
+        return self.cursor.fetchall()
+
+    def get_arch_zakaz_info(self, id_z):
+        q = "select DISTINCT company, model, vincode, enginecode, milleage, prod_year \
+            FROM autowork.arch_zakaz join car using(id_car) where id_z = %s"
+
+        self.cursor.execute(q, (id_z,))
+
+        return self.cursor.fetchone()
+
     def insert_timetable(self, work_date):
 
         q = "insert into timetable_date(work_date) values(%s)"

@@ -19,6 +19,8 @@ from usluga_table_dialog import Usluga
 from show_parts_dialog import Parts
 from detail_task_dialog import TaskInfo
 from empl_arch_history import ArchEmpl
+from cust_arch import ArchCust
+from arch_zakaz_dialog import ArchZakaz
 from extended_QTreeItem import Ext_Item
 from extended_qtablewidgetitem import Ext_TableItem
 
@@ -44,7 +46,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         Отключение от БД
         Выводит сообщение
         """
-
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText("Выход выполнен успешно")
@@ -52,6 +53,7 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
 
         try:
             self.close_db()
+            self.connection = None
             msg.exec_()
 
         except Exception as e:
@@ -83,6 +85,12 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         except Exception as e:
             print(traceback.format_exc())
             my_dial.error_msg()
+
+    def zakaz_arch_dialog(self):
+        ArchZakaz(self.connection, self.cursor)
+
+    def cust_arch_dialog(self):
+        ArchCust(self.connection, self.cursor)
 
     def empl_arch_dialog(self):
         ArchEmpl(self.connection, self.cursor)

@@ -12,6 +12,20 @@ class Customer_db():
 
         return self.cursor.fetchall()
 
+    def show_cust_arch(self, *args):
+
+        if len(args) == 0:
+            q = 'select * from arch_cust'
+            self.cursor.execute(q)
+        else:
+            q = "select * from arch_cust \
+                    where arch_date between %s and %s"
+
+            start, stop = args
+            self.cursor.execute(q, (start, stop))
+
+        return self.cursor.fetchall()
+
     def delete_customer(self, id_cust):
 
         querry = """
