@@ -66,7 +66,6 @@ def disconnect_(func):
         self.ui.emplArch.disconnect()
         self.ui.clientArch.disconnect()
         self.ui.zakazArch.disconnect()
-        self.ui.addCar.disconnect()
 
         return func(self)
 
@@ -110,8 +109,6 @@ def connect_(func):
         self.ui.emplArch.triggered.connect(self.empl_arch_dialog)
         self.ui.clientArch.triggered.connect(self.cust_arch_dialog)
         self.ui.zakazArch.triggered.connect(self.zakaz_arch_dialog)
-
-        self.ui.addCar.triggered.connect(self.raise_add_car)
 
         return func(self)
     return inner

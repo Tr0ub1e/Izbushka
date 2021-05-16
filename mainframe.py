@@ -4,7 +4,6 @@ from PyQt5 import QtWidgets, QtGui
 import decorators as ds
 from myform import Ui_MainWindow
 from db_tools import autowork_db
-from add_car_dialog import CarDial
 from add_usluga_dialog import Add_usluga
 from add_spec_dialog import Add_specialization
 from add_task_dialog import Add_Task
@@ -96,10 +95,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
         ArchEmpl(self.connection, self.cursor)
 
     @ds.update_windows
-    def raise_add_car(self):
-        CarDial(self.connection, self.cursor)
-
-    @ds.update_windows
     def raise_add_usluga(self):
         Add_usluga(self.connection, self.cursor, 'insert')
 
@@ -180,9 +175,6 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
             msg.setInformativeText('Вы не выбрали работника')
             msg.setWindowTitle("Ошибка")
             msg.exec_()
-
-    def raise_show_zakaz_history(self):
-        pass
 
     @ds.update_windows
     def raise_add_spec(self):
@@ -279,11 +271,10 @@ class MainFrame(QtWidgets.QMainWindow, autowork_db):
                 id_empl = self.ui.emplTree.currentItem().id_item
                 fio = self.ui.fioLab.text().split(' ')
                 spec = self.ui.specLab.text()
-                date_ = datetime.strptime(self.ui.dateLab.text(), '%Y-%m-%d').date()
                 phone = self.ui.phoneLab.text()
                 rate = self.ui.rateLab.text()
 
-                _ = (id_empl, *fio, date_, rate, phone, spec)
+                _ = (id_empl, *fio, rate, phone, spec)
 
                 my_dial = EmpDial(self.show_spec(), self.connection, self.cursor,
                         "update", _)

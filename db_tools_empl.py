@@ -124,7 +124,7 @@ class Employee_db():
 
         return self.cursor.fetchall()
 
-    def insert_employees(self, fio, rental_date, rate, spec, phone):
+    def insert_employees(self, fio, rate, spec, phone, rental_date):
 
         querry = """
                     insert into autowork.employees
@@ -150,7 +150,7 @@ class Employee_db():
         #добавление нового человека
         try:
             self.cursor.execute(querry, \
-                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
+                          (fio, rental_date, rate, phone))
             self.connection.commit()
 
         except Exception as e:
@@ -160,7 +160,7 @@ class Employee_db():
         #получение его ключа
         try:
             self.cursor.execute(id_empl_q, \
-                          (fio, rental_date.toString(Qt.ISODate), rate, phone))
+                          (fio, rental_date, rate, phone))
             id_empl = self.cursor.fetchone()
 
         except Exception as e:

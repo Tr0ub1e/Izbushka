@@ -25,8 +25,7 @@ class EmpDial(QtWidgets.QDialog):
         if type_ == 'update':
             self.fill_data(*up_st)
 
-            self.fio, self.rental_date, self.rate, \
-                                        self.spec, self.phone = self.get_data()
+            self.fio, self.rate, self.spec, self.phone = self.get_data()
 
             self.dial_ui.pushButton.clicked.connect(self.update_data)
 
@@ -45,7 +44,6 @@ class EmpDial(QtWidgets.QDialog):
             name = self.dial_ui.nameEdit.text()
             fath = self.dial_ui.fathEdit.text()
 
-            rental_date = self.dial_ui.dateEdit.date()
             rate = self.dial_ui.moneyEdit.text()
             spec = self.dial_ui.comboBox.currentText()
             phone = self.dial_ui.phoneEdit.text()
@@ -58,7 +56,7 @@ class EmpDial(QtWidgets.QDialog):
 
             _ = fam + " " +name+ " " + fath
 
-            return _, rental_date, rate, spec, phone
+            return _, rate, spec, phone
 
         except Exception as e:
             print(e)
@@ -70,17 +68,16 @@ class EmpDial(QtWidgets.QDialog):
     def insert_data(self):
 
         _ = self.get_data()
-        self.db.insert_employees(*_)
+        date = datetime.now().strftime('%Y-%m-%d')
+        self.db.insert_employees(*_, date)
 
-    def fill_data(self, id_empl, fam, name, fath, date, rate, phone, spec):
+    def fill_data(self, id_empl, fam, name, fath, rate, phone, spec):
 
         try:
             self.id_empl = id_empl
             self.dial_ui.famEdit.setText(fam)
             self.dial_ui.nameEdit.setText(name)
             self.dial_ui.fathEdit.setText(fath)
-
-            self.dial_ui.dateEdit.setDate(date)
             self.dial_ui.moneyEdit.setText(rate)
             self.dial_ui.comboBox.setCurrentIndex(self.dial_ui. \
                                             comboBox.findText(spec))
@@ -95,17 +92,13 @@ class EmpDial(QtWidgets.QDialog):
 
     def update_data(self):
 
-        fio, rental_date, rate, spec, phone = self.get_data()
+        fio, rate, spec, phone = self.get_data()
         id_pos = self.db.get_id_spec(spec)
 
         data = {}
-        rental_date = rental_date.toPyDate()
 
         if self.fio != fio:
             data['fio'] = fio
-
-        if self.rental_date != rental_date:
-            data['rental_date'] = rental_date
 
         if self.rate != rate:
             data['rate'] = rate

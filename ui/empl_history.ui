@@ -19,14 +19,14 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="label">
      <property name="font">
       <font>
        <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>По:</string>
+      <string>Период с:</string>
      </property>
     </widget>
    </item>
@@ -38,14 +38,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_2">
      <property name="font">
       <font>
        <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Период с:</string>
+      <string>По:</string>
      </property>
     </widget>
    </item>

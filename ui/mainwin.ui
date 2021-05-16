@@ -500,18 +500,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_6">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Кол-во заказов</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QLabel" name="label_2">
             <property name="font">
              <font>
@@ -565,18 +553,6 @@
           </item>
           <item>
            <widget class="QLabel" name="rateLab">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>NULL</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="ordersLab">
             <property name="font">
              <font>
               <pointsize>10</pointsize>
@@ -680,13 +656,6 @@
     <addaction name="showSklad"/>
     <addaction name="showUslugi"/>
    </widget>
-   <widget class="QMenu" name="menu_3">
-    <property name="title">
-     <string>Добавить</string>
-    </property>
-    <addaction name="addCar"/>
-    <addaction name="addPart"/>
-   </widget>
    <widget class="QMenu" name="menu_4">
     <property name="title">
      <string>Архив</string>
@@ -697,7 +666,6 @@
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
-   <addaction name="menu_3"/>
    <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
